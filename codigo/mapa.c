@@ -149,6 +149,7 @@ void gerar(STATE *st) {
 			else st->map[x][y].acessivel = 0;
 		}
 	}
+	st->map[st->playerX][st->playerY].acessivel = 1;
 	flood_fill(st,st->playerX,st->playerY);
 	for (int x = 0; x < st->nROWS; x++) {
 		for (int y = 0; y < st->nCOLS ; y++) {
