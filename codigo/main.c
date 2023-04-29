@@ -122,10 +122,10 @@ int main() {
 	while(1) {
 		for (int x = 0; x < st.nROWS; x++) {
 			for (int y = 0; y < st.nCOLS ; y++) {
-				st.map[x][y].ilum = 0;
+				st.map[x][y].ilum = 0; //antes da função draw_ligth apagamos as luzes todas
 			}
 		}
-		draw_light (&st);
+		draw_light (&st); //acender as luzes pretendidas
 		draw_map(&st);
 		draw_info(&st);
 		draw_player(&st);
