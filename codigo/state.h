@@ -4,6 +4,7 @@
 typedef struct mapa {
 	char caracterAtual;
 	char caracterAnterior;
+	int acessivel;
 	int dist;
 	int ilum;
 } MAPA;
