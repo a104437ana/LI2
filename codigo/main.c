@@ -61,16 +61,12 @@ void calc_dist (int R, int C, int value, STATE * st) {
 
 
 void draw_light (STATE *st) {
-	attron(COLOR_PAIR(COLOR_YELLOW));
-	if (st->map[st->playerX - 1][st->playerY - 1].caracterAtual != '#') mvaddch(st->playerX - 1, st->playerY - 1, '.' | A_BOLD);
-	if (st->map[st->playerX - 1][st->playerY].caracterAtual != '#') mvaddch(st->playerX - 1, st->playerY + 0, '.' | A_BOLD);
-	if (st->map[st->playerX - 1][st->playerY + 1].caracterAtual != '#') mvaddch(st->playerX - 1, st->playerY + 1, '.' | A_BOLD);
-	if (st->map[st->playerX][st->playerY - 1].caracterAtual != '#') mvaddch(st->playerX + 0, st->playerY - 1, '.' | A_BOLD);
-	if (st->map[st->playerX][st->playerY + 1].caracterAtual != '#') mvaddch(st->playerX + 0, st->playerY + 1, '.' | A_BOLD);
-	if (st->map[st->playerX + 1][st->playerY - 1].caracterAtual != '#') mvaddch(st->playerX + 1, st->playerY - 1, '.' | A_BOLD);
-	if (st->map[st->playerX + 1][st->playerY].caracterAtual != '#') mvaddch(st->playerX + 1, st->playerY + 0, '.' | A_BOLD);
-	if (st->map[st->playerX + 1][st->playerY + 1].caracterAtual != '#') mvaddch(st->playerX + 1, st->playerY + 1, '.' | A_BOLD);
-    attroff(COLOR_PAIR(COLOR_YELLOW));
+	signed int rX, rY;
+	for (rX = 1; rX >= - 1 ; rX--) {
+			for (rY = 1; rY >= - 1 ; rY--) {
+				st->map[st->playerX+rX][st->playerY+rY].ilum = 1;
+			}
+		}
 }
 
 
@@ -132,13 +128,20 @@ void update(STATE *st) {
 
 void draw_map (STATE *st) {
 	int x, y;
-	attron(COLOR_PAIR(COLOR_WHITE));
 	for (x=0;x<st->nROWS;x++) {
 		for (y=0;y<st->nCOLS;y++) {
-			mvaddch(x,y, st->map[x][y].caracterAtual | A_BOLD);
+			if (st->map[x][y].ilum == 0) {
+				attron(COLOR_PAIR(COLOR_BLUE));
+				mvaddch(x,y, st->map[x][y].caracterAtual | A_BOLD);
+				attroff(COLOR_PAIR(COLOR_BLUE));
+			}
+			else {
+				attron(COLOR_PAIR(COLOR_WHITE));
+				mvaddch(x,y, st->map[x][y].caracterAtual | A_BOLD);
+				attroff(COLOR_PAIR(COLOR_WHITE));
+			}
 		}
 	}
-	attroff(COLOR_PAIR(COLOR_WHITE));
 }
 
 int main() {
@@ -170,6 +173,12 @@ int main() {
 	gerar(&st);
 
 	while(1) {
+		for (int x = 0; x < st.nROWS; x++) {
+			for (int y = 0; y < st.nCOLS ; y++) {
+				st.map[x][y].ilum = 0; //antes da função draw_ligth apagamos as luzes todas
+			}
+		}
+		draw_light (&st); //acender as luzes pretendidas
 		draw_map(&st);
 		draw_info(&st);
 		draw_player(&st);

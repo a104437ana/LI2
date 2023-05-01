@@ -4,8 +4,9 @@
 typedef struct mapa {
 	char caracterAtual;
 	char caracterAnterior;
-	int dist;
-	int ilum;
+	int acessivel;
+	int dist; //valor da distancia ao jogador
+	int ilum; //1 se iluminado, 0 se não iluminado
 } MAPA;
 
 typedef struct state {

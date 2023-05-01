@@ -116,11 +116,22 @@ void second_alg (STATE *st) {
 	}
 }
 
+void flood_fill_alg (STATE *st, int x, int y) {
+	signed int rX, rY;
+	for (rX = 1; rX >= - 1 ; rX--) {
+			for (rY = 1; rY >= - 1 ; rY--) {
+				if (st->map[x+rX][y+rY].acessivel==0 && x+rX>=0 && y+rY>=0 && x+rX<st->nROWS && y+rY<st->nCOLS) {
+						st->map[x+rX][y+rY].acessivel = 1;
+						flood_fill_alg (st,x+rX,y+rY);
+				}
+			}
+		}
+}
 
 void gerar(STATE *st) {
-	int i;
-	st->playerX = 10;
-	st->playerY = 10;
+	int i,x,y,jo,njo,v;
+	st->playerX = lrand48() % st->nROWS;
+	st->playerY = lrand48() % st->nCOLS;
 	first_map(st);
 	for (i=1;i<=4;i++) {
 		first_alg(st);
@@ -128,9 +139,45 @@ void gerar(STATE *st) {
 	for (i=1;i<=3;i++) {
 		second_alg(st);
 	}
-	while (raio(st,st->playerX,st->playerY,2) != 0) {
+	while (raio(st,st->playerX,st->playerY,1) != 0) {
 		st->playerX = lrand48() % st->nROWS;
 	    st->playerY = lrand48() % st->nCOLS;
+	}
+	for (x = 0; x < st->nROWS; x++) {
+		for (y = 0; y < st->nCOLS ; y++) {
+			if (st->map[x][y].caracterAtual == '#') st->map[x][y].acessivel = 2;
+			else st->map[x][y].acessivel = 0;
+		}
+	}
+	st->map[st->playerX][st->playerY].acessivel = 1;
+	flood_fill_alg(st,st->playerX,st->playerY);
+	jo = 0;
+	njo = 0;
+	for (x = 0; x < st->nROWS; x++) {
+		for (y = 0; y < st->nCOLS ; y++) {
+			if (st->map[x][y].acessivel == 0) njo++;
+			else {
+				if (st->map[x][y].acessivel == 1) jo++;
+			}
+		}
+	}
+	if (jo>=njo) v = 0;
+	if (njo>jo) v = 1;
+	for (x = 0; x < st->nROWS; x++) {
+		for (y = 0; y < st->nCOLS ; y++) {
+			if (st->map[x][y].acessivel == v) {
+				st->map[x][y].acessivel = 2;
+				st->map[x][y].caracterAtual = '#';
+			}
+		}
+	}
+	if (njo>jo) {
+		st->playerX = lrand48() % st->nROWS;
+	    st->playerY = lrand48() % st->nCOLS;
+		while (raio(st,st->playerX,st->playerY,1) != 0) {
+		st->playerX = lrand48() % st->nROWS;
+	    st->playerY = lrand48() % st->nCOLS;
+	    }
 	}
 }
 
