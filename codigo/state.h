@@ -14,7 +14,14 @@ typedef struct state {
 	int playerY;
 	int nROWS;
 	int nCOLS;
+	int monsterX;
+	int monsterY;
 	struct mapa map[60][250];
 } STATE;
+
+typedef struct monsters {
+     int monsterX;
+	 int monsterY;
+} MONSTER;
 
 #endif
