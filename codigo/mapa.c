@@ -6,6 +6,15 @@
 
 #include "mapa.h"
 
+void escada (STATE *st) {
+	st->escada.X = lrand48() % st->jogo.X;
+	st->escada.Y = lrand48() % st->jogo.Y;
+	while (st->map[st->escada.X][st->escada.Y].acessivel != 1) {
+		st->escada.X = lrand48() % st->jogo.X;
+	    st->escada.Y = lrand48() % st->jogo.Y;
+    }
+}
+
 int raio (STATE *st, int x, int y, int r) {
 	int n = 0;
 	signed int rX, rY;
@@ -23,14 +32,14 @@ void first_map (STATE *st) {
 	int x, y;
 	x = 0;
 	y = 0;
-	for (;x<st->nROWS;x++) {
+	for (;x<st->jogo.X;x++) {
 		st->map[x][y].caracterAtual = '#';
 	}
-	x = st->nROWS - 1;
-	for (;y<st->nCOLS;y++) {
+	x = st->jogo.X - 1;
+	for (;y<st->jogo.Y;y++) {
 		st->map[x][y].caracterAtual = '#';
 	}
-	y = st->nCOLS - 1;
+	y = st->jogo.Y - 1;
 	for (;x>=0;x--) {
 		st->map[x][y].caracterAtual = '#';
 	}
@@ -40,14 +49,14 @@ void first_map (STATE *st) {
 	}
 	x = 1;
 	y = 1;
-	for (;x<st->nROWS-1;x++) {
+	for (;x<st->jogo.X-1;x++) {
 		st->map[x][y].caracterAtual = '#';
 	}
-	x = st->nROWS - 2;
-	for (;y<st->nCOLS-1;y++) {
+	x = st->jogo.X - 2;
+	for (;y<st->jogo.Y-1;y++) {
 		st->map[x][y].caracterAtual = '#';
 	}
-	y = st->nCOLS - 2;
+	y = st->jogo.Y - 2;
 	for (;x>=1;x--) {
 		st->map[x][y].caracterAtual = '#';
 	}
@@ -56,9 +65,9 @@ void first_map (STATE *st) {
 		st->map[x][y].caracterAtual = '#';
 	}
 	x = 2;
-	for (;x<st->nROWS - 2;x++) {
+	for (;x<st->jogo.X - 2;x++) {
 		y = 2;
-		for (;y<st->nCOLS - 2;y++) {
+		for (;y<st->jogo.Y - 2;y++) {
 			if (drand48() < 0.34) {
 				st->map[x][y].caracterAtual = '#';
 			}
@@ -71,20 +80,20 @@ void first_map (STATE *st) {
 
 void first_alg (STATE *st) {
 	int x, y;
-	for (x=0;x<st->nROWS;x++) {
-		for (y=0;y<st->nCOLS;y++) {
+	for (x=0;x<st->jogo.X;x++) {
+		for (y=0;y<st->jogo.Y;y++) {
 			st->map[x][y].caracterAnterior = st->map[x][y].caracterAtual;
 		}
 	}
 	x = 2;
-	for (;x<st->nROWS - 2;x++) {
+	for (;x<st->jogo.X - 2;x++) {
 		y = 2;
-		for (;y<st->nCOLS - 2;y++) {
+		for (;y<st->jogo.Y - 2;y++) {
 			if (raio(st,x,y,1)>=5) {
 				st->map[x][y].caracterAtual = '#';
 			}
 			else {
-				if (raio(st,x,y,2)==0) {
+				if (raio(st,x,y,2)<=2) {
 				    st->map[x][y].caracterAtual = '#';
 				}
 				else {
@@ -97,15 +106,15 @@ void first_alg (STATE *st) {
 
 void second_alg (STATE *st) {
 	int x, y;
-	for (x=0;x<st->nROWS;x++) {
-		for (y=0;y<st->nCOLS;y++) {
+	for (x=0;x<st->jogo.X;x++) {
+		for (y=0;y<st->jogo.Y;y++) {
 			st->map[x][y].caracterAnterior = st->map[x][y].caracterAtual;
 		}
 	}
 	x = 2;
-	for (;x<st->nROWS - 2;x++) {
+	for (;x<st->jogo.X - 2;x++) {
 		y = 2;
-		for (;y<st->nCOLS - 2;y++) {
+		for (;y<st->jogo.Y - 2;y++) {
 			if (raio(st,x,y,1)>=5) {
 				st->map[x][y].caracterAtual = '#';
 			}
@@ -116,68 +125,68 @@ void second_alg (STATE *st) {
 	}
 }
 
-void flood_fill_alg (STATE *st, int x, int y) {
+void flood_fill_alg (STATE *st, int x, int y, int valor) {
 	signed int rX, rY;
 	for (rX = 1; rX >= - 1 ; rX--) {
 			for (rY = 1; rY >= - 1 ; rY--) {
-				if (st->map[x+rX][y+rY].acessivel==0 && x+rX>=0 && y+rY>=0 && x+rX<st->nROWS && y+rY<st->nCOLS) {
-						st->map[x+rX][y+rY].acessivel = 1;
-						flood_fill_alg (st,x+rX,y+rY);
+				if (st->map[x+rX][y+rY].acessivel==0 && x+rX>=0 && y+rY>=0 && x+rX<st->jogo.X && y+rY<st->jogo.Y) {
+						st->map[x+rX][y+rY].acessivel = valor;
+						flood_fill_alg (st,x+rX,y+rY,valor);
 				}
 			}
 		}
 }
 
 void gerar(STATE *st) {
-	int i,x,y,jo,njo,v;
-	st->playerX = lrand48() % st->nROWS;
-	st->playerY = lrand48() % st->nCOLS;
+	int i,x,y;
+	st->jogador.X = lrand48() % st->jogo.X;
+	st->jogador.Y = lrand48() % st->jogo.Y;
 	first_map(st);
-	for (i=1;i<=4;i++) {
+	for (i=1;i<=5;i++) {
 		first_alg(st);
 	}
-	for (i=1;i<=3;i++) {
+	for (i=1;i<=15;i++) {
 		second_alg(st);
 	}
-	while (raio(st,st->playerX,st->playerY,1) != 0) {
-		st->playerX = lrand48() % st->nROWS;
-	    st->playerY = lrand48() % st->nCOLS;
+	while (st->map[st->jogador.X][st->jogador.Y].caracterAtual != '.') {
+		st->jogador.X = lrand48() % st->jogo.X;
+	    st->jogador.Y = lrand48() % st->jogo.Y;
 	}
-	for (x = 0; x < st->nROWS; x++) {
-		for (y = 0; y < st->nCOLS ; y++) {
-			if (st->map[x][y].caracterAtual == '#') st->map[x][y].acessivel = 2;
+	for (x = 0; x < st->jogo.X; x++) {
+		for (y = 0; y < st->jogo.Y ; y++) {
+			if (st->map[x][y].caracterAtual == '#') st->map[x][y].acessivel = -1;
 			else st->map[x][y].acessivel = 0;
 		}
 	}
-	st->map[st->playerX][st->playerY].acessivel = 1;
-	flood_fill_alg(st,st->playerX,st->playerY);
-	jo = 0;
-	njo = 0;
-	for (x = 0; x < st->nROWS; x++) {
-		for (y = 0; y < st->nCOLS ; y++) {
-			if (st->map[x][y].acessivel == 0) njo++;
-			else {
-				if (st->map[x][y].acessivel == 1) jo++;
+	
+    st->map[st->jogador.X][st->jogador.Y].acessivel = 1;
+	flood_fill_alg(st,st->jogador.X,st->jogador.Y,1);
+	
+	i = 2;
+    for (x = 0; x < st->jogo.X; x++) {
+		for (y = 0; y < st->jogo.Y ; y++) {
+			if (st->map[x][y].acessivel == 0) {
+				flood_fill_alg(st,x,y,i);
+				i++;
 			}
 		}
 	}
-	if (jo>=njo) v = 0;
-	if (njo>jo) v = 1;
-	for (x = 0; x < st->nROWS; x++) {
-		for (y = 0; y < st->nCOLS ; y++) {
-			if (st->map[x][y].acessivel == v) {
-				st->map[x][y].acessivel = 2;
-				st->map[x][y].caracterAtual = '#';
-			}
-		}
+
+    while (st->map[st->jogador.X][st->jogador.Y].acessivel != 1) {
+		st->jogador.X = lrand48() % st->jogo.X;
+	    st->jogador.Y = lrand48() % st->jogo.Y;
 	}
-	if (njo>jo) {
-		st->playerX = lrand48() % st->nROWS;
-	    st->playerY = lrand48() % st->nCOLS;
-		while (raio(st,st->playerX,st->playerY,1) != 0) {
-		st->playerX = lrand48() % st->nROWS;
-	    st->playerY = lrand48() % st->nCOLS;
-	    }
+	st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+	
+	escada(st);
+	st->map[st->escada.X][st->escada.Y].acessivel = 0;
+	st->map[st->escada.X][st->escada.Y].caracterAtual = '>';
+	st->map[st->jogador.X][st->jogador.Y].caracterAtual = '>';
+
+	for (x = 0; x < st->jogo.X; x++) {
+		for (y = 0; y < st->jogo.Y ; y++) {
+			if (st->map[x][y].caracterAtual == '#') (st->paredes)++;
+		}
 	}
 }
 
