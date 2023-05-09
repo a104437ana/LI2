@@ -132,12 +132,34 @@ void movimento_monstros (STATE *st, int i) {
 			        st->monstro[i].Y = st->monstro[i].Y + 1;
 		            }
 					else {
-
+                       if (st->map[st->monstro[i].X + 1][st->monstro[i].Y + 1].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist) {
+						st->monstro[i].X = st->monstro[i].X+1;
+						st->monstro[i].Y = st->monstro[i].Y+1;
+					   }
+					   else {
+						if (st->map[st->monstro[i].X -1][st->monstro[i].Y -1].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist) {
+						st->monstro[i].X = st->monstro[i].X-1;
+                        st->monstro[i].Y = st->monstro[i].Y-1;
+						}
+						else {
+							if (st->map[st->monstro[i].X-1][st->monstro[i].Y +1].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist) {
+                                 st->monstro[i].X = st->monstro[i].X -1;
+								 st->monstro[i].Y=st->monstro[i].Y+1;
+							}
+							else {
+								if (st->map[st->monstro[i].X +1][st->monstro[i].Y-1].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist) {
+								st->monstro[i].X = st->monstro[i].X+1;
+								st->monstro[i].Y = st->monstro[i].Y-1;
+								}
+							}
+						}
+					   }
 					}
 				}
 			}
-		}
+		 
 	}
+}
 }
 }
 
