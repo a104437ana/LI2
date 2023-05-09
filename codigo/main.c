@@ -7,43 +7,46 @@
 #include "state.h"
 #include "mapa.h"
 
-#define MAX_DIST 19
+#define MAX_DIST 10
 #define MAX_ROW 60	// x
 #define MAX_COL 250 // y
 #define SHOW_DIST 0
+
+void draw_monsterRato(STATE *st)
+{  
+
+	for (int i=0;i<4;i++) {
+	attron(COLOR_PAIR(COLOR_MAGENTA));
+	mvaddch(st->monstro[i].X, st->monstro[i].Y, 'r' | A_BOLD);
+	attroff(COLOR_PAIR(COLOR_MAGENTA));
+}
+}
+
+void draw_monsterDog(STATE *st)
+{  
+
+	for (int i=4;i<6;i++) {
+	attron(COLOR_PAIR(COLOR_MAGENTA));
+	mvaddch(st->monstro[i].X, st->monstro[i].Y, 'd' | A_BOLD);
+	attroff(COLOR_PAIR(COLOR_MAGENTA));
+}
+}
+
+void draw_monsterBat(STATE *st)
+{  
+
+	for (int i=6;i<8;i++) {
+	attron(COLOR_PAIR(COLOR_MAGENTA));
+	mvaddch(st->monstro[i].X, st->monstro[i].Y, 'b' | A_BOLD);
+	attroff(COLOR_PAIR(COLOR_MAGENTA));
+}
+}
 
 void draw_player(STATE *st)
 {
 	attron(COLOR_PAIR(COLOR_WHITE));
 	mvaddch(st->jogador.X, st->jogador.Y, '@' | A_BOLD);
 	attroff(COLOR_PAIR(COLOR_WHITE));
-}
-
-void gerarCoordMonstro(STATE *st)
-{
-	st->monstro[0].X = lrand48() % (st->jogo.X);
-	st->monstro[0].Y = lrand48() % (st->jogo.Y);
-
-	while (st->map[st->monstro[0].X][st->monstro[0].Y].caracterAtual == '#')
-	{
-		st->monstro[0].X = lrand48() % (st->jogo.X);
-		st->monstro[0].Y = lrand48() % (st->jogo.Y);
-	}
-}
-
-// calcula a distancia entre o monstro[0] e o jogador
-
-
-int distMonsterPlayer(STATE *st)
-{
-	return st->map[st->monstro[0].X][st->monstro[0].Y].dist;
-}
-
-void draw_monster(STATE *st)
-{
-	attron(COLOR_PAIR(COLOR_MAGENTA));
-	mvaddch(st->monstro[0].X, st->monstro[0].Y, 'r' | A_BOLD);
-	attroff(COLOR_PAIR(COLOR_MAGENTA));
 }
 
 void reset_dist(STATE *st)
@@ -53,7 +56,7 @@ void reset_dist(STATE *st)
 	for (i = 0; i < st->jogo.X; i++)
 	{
 		for (j = 0; j < st->jogo.Y; j++)
-			st->map[i][j].dist = -1;
+			st->map[i][j].dist = 300;
 	}
 }
 
@@ -95,7 +98,7 @@ void draw_light(STATE *st)
 void draw_info(STATE *st) {
 	move(st->jogo.X - 1, 0);
 	attron(COLOR_PAIR(COLOR_BLUE));
-	printw("(%d, %d) %d %d -> %d -> %d", st->jogador.X, st->jogador.Y, st->jogo.X, st->jogo.Y, (st->paredes * 100) / (st->jogo.X * st->jogo.Y),st->erro);
+	printw("(%d, %d) %d %d -> %d", st->jogador.X, st->jogador.Y, st->jogo.X, st->jogo.Y, (st->paredes * 100) / (st->jogo.X * st->jogo.Y));
 	printw(" ");
 	attroff(COLOR_PAIR(COLOR_BLUE));
 }
@@ -106,102 +109,171 @@ void do_movement_action(STATE *st, int dx, int dy)
 	st->jogador.Y += dy;
 }
 
+void movimento_monstros (STATE *st, int i) {
+	if (st->map[st->monstro[i].X][st->monstro[i].Y].dist != 300) {
+	 {
+		if (st->map[st->monstro[i].X - 1][st->monstro[i].Y].acessivel ==1 && st->map[st->monstro[i].X - 1][st->monstro[i].Y].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist)
+		{
+		st->monstro[i].X = st->monstro[i].X - 1;
+		}
+		else {
+			if (st->map[st->monstro[i].X + 1][st->monstro[i].Y].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist)
+		    {
+			st->monstro[i].X = st->monstro[i].X + 1;
+		    }
+			else {
+				if (st->map[st->monstro[i].X][st->monstro[i].Y - 1].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist)
+		        {
+			    st->monstro[i].Y = st->monstro[i].Y - 1;
+		        }
+				else {
+					if (st->map[st->monstro[i].X][st->monstro[i].Y + 1].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist)
+		            {
+			        st->monstro[i].Y = st->monstro[i].Y + 1;
+		            }
+					else {
+
+					}
+				}
+			}
+		}
+	}
+}
+}
+
 void update(STATE *st)
 {
 	int key = getch();
-
 	mvaddch(st->jogador.X, st->jogador.Y, '.');
-    mvaddch(st->monstro[0].X, st->monstro[0].Y, '.');
+	if (st->map[st->jogador.X][st->jogador.Y].caracterAtual == '<') st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+	else st->map[st->jogador.X][st->jogador.Y].acessivel = 1;
 	switch (key)
 	{
 	case KEY_A1:
 	case '7':
+	    for (int i=0;i<8;i++) {
+		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
+		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		movimento_monstros(st,i);
+	    }
 		if (st->map[st->jogador.X - 1][st->jogador.Y - 1].caracterAtual == '.' || st->map[st->jogador.X - 1][st->jogador.Y - 1].caracterAtual == '+')
 			do_movement_action(st, -1, -1);
 		else {
 			if (st->jogador.X - 1 == st->escada.X && st->jogador.Y - 1== st->escada.Y) {
 			    gerar(st);
-				gerarCoordMonstro(st);
 			}
 		}
 		break;
 	case KEY_UP:
 	case '8':
+	    for (int i=0;i<8;i++) {
+		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
+		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		movimento_monstros(st,i);
+	    }
 		if (st->map[st->jogador.X - 1][st->jogador.Y].caracterAtual == '.' || st->map[st->jogador.X - 1][st->jogador.Y].caracterAtual == '+')
 			do_movement_action(st, -1, +0);
 		else {
 			if (st->jogador.X - 1 == st->escada.X && st->jogador.Y == st->escada.Y) {
 			    gerar(st);
-				gerarCoordMonstro(st);
 			}
 		}
 		break;
 	case KEY_A3:
 	case '9':
+	    for (int i=0;i<8;i++) {
+		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
+		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		movimento_monstros(st,i);
+	    }
 		if (st->map[st->jogador.X - 1][st->jogador.Y + 1].caracterAtual == '.' || st->map[st->jogador.X - 1][st->jogador.Y + 1].caracterAtual == '+')
 			do_movement_action(st, -1, +1);
 		else {
 			if (st->jogador.X - 1 == st->escada.X && st->jogador.Y + 1 == st->escada.Y) {
 			    gerar(st);
-				gerarCoordMonstro(st);
 			}
 		}
 		break;
 	case KEY_LEFT:
 	case '4':
+	    for (int i=0;i<8;i++) {
+		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
+		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		movimento_monstros(st,i);
+	    }
 		if (st->map[st->jogador.X][st->jogador.Y - 1].caracterAtual == '.' || st->map[st->jogador.X][st->jogador.Y - 1].caracterAtual == '+')
 			do_movement_action(st, +0, -1);
 		else {
 			if (st->jogador.X == st->escada.X && st->jogador.Y - 1 == st->escada.Y) {
 			    gerar(st);
-				gerarCoordMonstro(st);
 			}
 		}
 		break;
 	case KEY_B2:
 	case '5':
+	    for (int i=0;i<8;i++) {
+		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
+		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		movimento_monstros(st,i);
+	    }
 		break;
 	case KEY_RIGHT:
 	case '6':
+	    for (int i=0;i<8;i++) {
+		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
+		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		movimento_monstros(st,i);
+	    }
 		if (st->map[st->jogador.X][st->jogador.Y + 1].caracterAtual == '.' || st->map[st->jogador.X][st->jogador.Y + 1].caracterAtual == '+')
 			do_movement_action(st, +0, +1);
 		else {
 			if (st->jogador.X == st->escada.X && st->jogador.Y + 1 == st->escada.Y) {
 			    gerar(st);
-				gerarCoordMonstro(st);
 			}
 		}
 		break;
 	case KEY_C1:
 	case '1':
+	    for (int i=0;i<8;i++) {
+		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
+		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		movimento_monstros(st,i);
+	    }
 		if (st->map[st->jogador.X + 1][st->jogador.Y - 1].caracterAtual == '.' || st->map[st->jogador.X + 1][st->jogador.Y - 1].caracterAtual == '+')
 			do_movement_action(st, +1, -1);
 		else {
 			if (st->jogador.X + 1 == st->escada.X && st->jogador.Y - 1 == st->escada.Y) {
 			    gerar(st);
-				gerarCoordMonstro(st);
 			}
 		}
 		break;
 	case KEY_DOWN:
 	case '2':
+	    for (int i=0;i<8;i++) {
+		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
+		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		movimento_monstros(st,i);
+	    }
 		if (st->map[st->jogador.X + 1][st->jogador.Y].caracterAtual == '.' || st->map[st->jogador.X + 1][st->jogador.Y].caracterAtual == '+')
 			do_movement_action(st, +1, +0);
 		else {
 			if (st->jogador.X + 1 == st->escada.X && st->jogador.Y == st->escada.Y) {
 			    gerar(st);
-				gerarCoordMonstro(st);
 			}
 		}
 		break;
 	case KEY_C3:
 	case '3':
+	    for (int i=0;i<8;i++) {
+		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
+		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		movimento_monstros(st,i);
+	    }
 		if (st->map[st->jogador.X + 1][st->jogador.Y + 1].caracterAtual == '.' || st->map[st->jogador.X + 1][st->jogador.Y + 1].caracterAtual == '+')
 			do_movement_action(st, +1, +1);
 		else {
 			if (st->jogador.X + 1 == st->escada.X && st->jogador.Y + 1 == st->escada.Y) {
 			    gerar(st);
-				gerarCoordMonstro(st);
 			}
 		}
 		break;
@@ -211,6 +283,7 @@ void update(STATE *st)
 		break;
 	}
 }
+
 
 void draw_map(STATE *st)
 {
@@ -266,7 +339,6 @@ int main()
 	st.jogo.X = nrows;
 	st.jogo.Y = ncols;
 	st.paredes = 0;
-	st.erro = 0;
 
 	srand48(time(NULL));
 	start_color();
@@ -286,7 +358,6 @@ int main()
 	init_pair(COLOR_CYAN, COLOR_CYAN, COLOR_BLACK);
 
 	gerar(&st);
-	gerarCoordMonstro(&st);
 	while (1)
 	{
 		for (int x = 0; x < st.jogo.X; x++)
@@ -302,7 +373,9 @@ int main()
 		draw_map(&st);
 		draw_info(&st);
 		draw_player(&st);
-		draw_monster(&st);
+		draw_monsterRato(&st);
+		draw_monsterDog(&st);
+		draw_monsterBat(&st);
 		move(st.jogador.X, st.jogador.Y);
 		update(&st);
 	}

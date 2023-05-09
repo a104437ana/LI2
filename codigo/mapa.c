@@ -6,12 +6,33 @@
 
 #include "mapa.h"
 
-void escada (STATE *st) {
+void gerar_coordenadas (STATE *st) {
+	st->jogador.X = lrand48() % st->jogo.X;
+	st->jogador.Y = lrand48() % st->jogo.Y;
+	while (raio(st,st->jogador.X,st->jogador.Y,1) != 0 || st->map[st->jogador.X][st->jogador.Y].acessivel != 1) {
+		st->jogador.X = lrand48() % st->jogo.X;
+	    st->jogador.Y = lrand48() % st->jogo.Y;
+	}
+	st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
 	st->escada.X = lrand48() % st->jogo.X;
 	st->escada.Y = lrand48() % st->jogo.Y;
 	while (st->map[st->escada.X][st->escada.Y].acessivel != 1) {
 		st->escada.X = lrand48() % st->jogo.X;
 	    st->escada.Y = lrand48() % st->jogo.Y;
+    }
+	st->map[st->escada.X][st->escada.Y].acessivel = 0;
+	for (int i = 0; i < 8; i++)
+    {
+		st->monstro[i].X = lrand48() % (st->jogo.X);
+		st->monstro[i].Y = lrand48() % (st->jogo.Y);
+
+	    while (st->map[st->monstro[i].X][st->monstro[i].Y].acessivel != 1)
+	    {
+			st->monstro[i].X = lrand48() % (st->jogo.X);
+			st->monstro[i].Y = lrand48() % (st->jogo.Y);
+	    }
+
+	st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 0;
     }
 }
 
@@ -125,40 +146,30 @@ void second_alg (STATE *st) {
 	}
 }
 
-void flood_fill_alg (STATE *st, int x, int y, int valor,int valori) {
+void flood_fill_alg (STATE *st, int x, int y, int valor1,int valor2) {
 	signed int rX, rY;
 	for (rX = 1; rX >= - 1 ; rX--) {
 			for (rY = 1; rY >= - 1 ; rY--) {
-				if (st->map[x+rX][y+rY].acessivel==valori && x+rX>=0 && y+rY>=0 && x+rX<st->jogo.X && y+rY<st->jogo.Y) {
-						st->map[x+rX][y+rY].acessivel = valor;
-						flood_fill_alg (st,x+rX,y+rY,valor,valori);
+				if (st->map[x+rX][y+rY].acessivel==valor2 && x+rX>=0 && y+rY>=0 && x+rX<st->jogo.X && y+rY<st->jogo.Y) {
+						st->map[x+rX][y+rY].acessivel = valor1;
+						flood_fill_alg (st,x+rX,y+rY,valor1,valor2);
 				}
 			}
 		}
 }
 
-void gerar(STATE *st) {
-	int i,j,x,y;
-	st->jogador.X = lrand48() % st->jogo.X;
-	st->jogador.Y = lrand48() % st->jogo.Y;
-	first_map(st);
-	for (i=1;i<=5;i++) {
-		first_alg(st);
-	}
-	for (i=1;i<=15;i++) {
-		second_alg(st);
-	}
-	while (st->map[st->jogador.X][st->jogador.Y].caracterAtual != '.') {
-		st->jogador.X = lrand48() % st->jogo.X;
-	    st->jogador.Y = lrand48() % st->jogo.Y;
-	}
+void reset_acesso (STATE *st) {
+	int x, y;
 	for (x = 0; x < st->jogo.X; x++) {
 		for (y = 0; y < st->jogo.Y ; y++) {
 			if (st->map[x][y].caracterAtual == '#') st->map[x][y].acessivel = -1;
 			else st->map[x][y].acessivel = 0;
 		}
 	}
-	
+}
+
+int prencher_mapa_acesso (STATE *st) {
+	int x,y,i;
 	i = 1;
 	for (x = 0; x < st->jogo.X; x++) {
 		for (y = 0; y < st->jogo.Y ; y++) {
@@ -171,7 +182,11 @@ void gerar(STATE *st) {
 			}
 		}
 	}
+	return i;
+}
 
+void gerar_corredores (STATE *st, int i) {
+	int j,x,y;
 	j = 1;
 	while (j<i) {
 		x = st->sala[j].X;
@@ -204,10 +219,10 @@ void gerar(STATE *st) {
 			y--;
 			st->map[x][y].caracterAtual = '+';
 			y--;
-			for (;y<st->jogo.Y - 2 && st->map[x][y].acessivel != j+1; y--) {
+			for (;y>2 && st->map[x][y].acessivel != j+1; y--) {
 				st->map[x][y].caracterAtual = '+';
 			}
-			while (y<st->jogo.Y - 2 && st->map[x][y].caracterAtual != '#') {
+			while (y>2 && st->map[x][y].caracterAtual != '#') {
 				st->map[x][y].caracterAtual = '+';
 				y--;
 			}
@@ -215,27 +230,80 @@ void gerar(STATE *st) {
 			st->map[x][y].caracterAtual = '+';
 			flood_fill_alg(st,x,y,1,j+1);
 		}
+		else {
+		x = st->sala[j].X + 1;
+		y = st->sala[j].Y;
+		for (;x<st->jogo.X - 2 && st->map[x][y].acessivel != 1;x++) {
+		}
+		if (x<st->jogo.X - 2) {
+			st->map[x][y].caracterAtual = '+';
+			x--;
+			st->map[x][y].caracterAtual = '+';
+			x--;
+			for (;x>2 && st->map[x][y].acessivel != j+1; x--) {
+				st->map[x][y].caracterAtual = '+';
+			}
+			while (x>2 && st->map[x][y].caracterAtual != '#') {
+				st->map[x][y].caracterAtual = '+';
+				x--;
+			}
+			x++;
+			st->map[x][y].caracterAtual = '+';
+			flood_fill_alg(st,x,y,1,j+1);
+		}
+		else {
+		x = st->sala[j].X - 1;
+		y = st->sala[j].Y;
+		for (;x>2 && st->map[x][y].acessivel != 1;x--) {
+		}
+		if (x>2) {
+			st->map[x][y].caracterAtual = '+';
+			x++;
+			st->map[x][y].caracterAtual = '+';
+			x++;
+			for (;x<st->jogo.X - 2 && st->map[x][y].acessivel != j+1; x++) {
+				st->map[x][y].caracterAtual = '+';
+			}
+			while (x<st->jogo.X - 2 && st->map[x][y].caracterAtual != '#') {
+				st->map[x][y].caracterAtual = '+';
+				x++;
+			}
+			x--;
+			st->map[x][y].caracterAtual = '+';
+			flood_fill_alg(st,x,y,1,j+1);
+		}
+		}
+		}
 		}
 		j++;
 	}
+}
 
-    while (st->map[st->jogador.X][st->jogador.Y].acessivel != 1) {
-		st->jogador.X = lrand48() % st->jogo.X;
-	    st->jogador.Y = lrand48() % st->jogo.Y;
+void gerar(STATE *st) {
+	int i,x,y;
+	first_map(st);
+	for (i=1;i<=5;i++) {
+		first_alg(st);
 	}
-	st->map[st->jogador.X][st->jogador.Y].acessivel = 1;
-	
-	escada(st);
-	st->map[st->escada.X][st->escada.Y].acessivel = 1;
-	st->map[st->escada.X][st->escada.Y].caracterAtual = '>';
-	st->map[st->jogador.X][st->jogador.Y].caracterAtual = '>';
+	for (i=1;i<=15;i++) {
+		second_alg(st);
+	}
+	reset_acesso(st);
+	i = prencher_mapa_acesso (st);
+	gerar_corredores (st,i);
 
 	for (x = 0; x < st->jogo.X; x++) {
 		for (y = 0; y < st->jogo.Y ; y++) {
 			if (st->map[x][y].caracterAtual == '#') {(st->paredes)++; st->map[x][y].acessivel = -1;}
 			if (st->map[x][y].caracterAtual == '+') st->map[x][y].acessivel = 1;
-			if (st->map[x][y].acessivel == 0 || st->map[x][y].acessivel > 1) st->erro = 1;
 		}
 	}
+	for (i=0;i<50;i++) {
+		st->sala[i].X = 0;
+		st->sala[i].Y = 0;
+	}
+	gerar_coordenadas(st);
+	st->map[st->escada.X][st->escada.Y].caracterAtual = '>';
+	st->map[st->jogador.X][st->jogador.Y].caracterAtual = '>';
 }
 

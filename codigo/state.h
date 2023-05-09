@@ -15,13 +15,12 @@ typedef struct mapa {
 } MAPA;
 
 typedef struct state {
-	int erro;
 	int paredes;
 	struct coordenadas jogo;
 	struct coordenadas jogador;
 	struct coordenadas escada;
 	struct coordenadas sala[50];
-	struct coordenadas monstro[10];
+	struct coordenadas monstro[8];
 	struct mapa map[60][250];
 } STATE;
 
