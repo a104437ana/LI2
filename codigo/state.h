@@ -6,6 +6,16 @@ typedef struct coordenadas {
 	int Y;
 } COORD;
 
+typedef struct jogador {
+	struct coordenadas coord;
+	int vida;
+} JOGADOR;
+
+typedef struct monstro {
+	struct coordenadas coord;
+	int vida;
+} MONSTRO;
+
 typedef struct mapa {
 	char caracterAtual;
 	char caracterAnterior;
@@ -17,10 +27,10 @@ typedef struct mapa {
 typedef struct state {
 	int paredes;
 	struct coordenadas jogo;
-	struct coordenadas jogador;
 	struct coordenadas escada;
 	struct coordenadas sala[50];
-	struct coordenadas monstro[8];
+	struct jogador jogador;
+	struct monstro monstro[8];
 	struct mapa map[60][250];
 } STATE;
 

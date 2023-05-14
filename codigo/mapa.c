@@ -7,13 +7,13 @@
 #include "mapa.h"
 
 void gerar_coordenadas (STATE *st) {
-	st->jogador.X = lrand48() % st->jogo.X;
-	st->jogador.Y = lrand48() % st->jogo.Y;
-	while (raio(st,st->jogador.X,st->jogador.Y,1) != 0 || st->map[st->jogador.X][st->jogador.Y].acessivel != 1) {
-		st->jogador.X = lrand48() % st->jogo.X;
-	    st->jogador.Y = lrand48() % st->jogo.Y;
+	st->jogador.coord.X = lrand48() % st->jogo.X;
+	st->jogador.coord.Y = lrand48() % st->jogo.Y;
+	while (raio(st,st->jogador.coord.X,st->jogador.coord.Y,1) != 0 || st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel != 1) {
+		st->jogador.coord.X = lrand48() % st->jogo.X;
+	    st->jogador.coord.Y = lrand48() % st->jogo.Y;
 	}
-	st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+	st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 	st->escada.X = lrand48() % st->jogo.X;
 	st->escada.Y = lrand48() % st->jogo.Y;
 	while (st->map[st->escada.X][st->escada.Y].acessivel != 1) {
@@ -23,16 +23,16 @@ void gerar_coordenadas (STATE *st) {
 	st->map[st->escada.X][st->escada.Y].acessivel = 0;
 	for (int i = 0; i < 8; i++)
     {
-		st->monstro[i].X = lrand48() % (st->jogo.X);
-		st->monstro[i].Y = lrand48() % (st->jogo.Y);
+		st->monstro[i].coord.X = lrand48() % (st->jogo.X);
+		st->monstro[i].coord.Y = lrand48() % (st->jogo.Y);
 
-	    while (st->map[st->monstro[i].X][st->monstro[i].Y].acessivel != 1)
+	    while (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel != 1)
 	    {
-			st->monstro[i].X = lrand48() % (st->jogo.X);
-			st->monstro[i].Y = lrand48() % (st->jogo.Y);
+			st->monstro[i].coord.X = lrand48() % (st->jogo.X);
+			st->monstro[i].coord.Y = lrand48() % (st->jogo.Y);
 	    }
 
-	st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 0;
+	st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
     }
 }
 
@@ -304,6 +304,6 @@ void gerar(STATE *st) {
 	}
 	gerar_coordenadas(st);
 	st->map[st->escada.X][st->escada.Y].caracterAtual = '>';
-	st->map[st->jogador.X][st->jogador.Y].caracterAtual = '>';
+	st->map[st->jogador.coord.X][st->jogador.coord.Y].caracterAtual = '>';
 }
 

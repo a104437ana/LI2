@@ -17,7 +17,7 @@ void draw_monsterRato(STATE *st)
 
 	for (int i=0;i<4;i++) {
 	attron(COLOR_PAIR(COLOR_MAGENTA));
-	mvaddch(st->monstro[i].X, st->monstro[i].Y, 'r' | A_BOLD);
+	mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, 'r' | A_BOLD);
 	attroff(COLOR_PAIR(COLOR_MAGENTA));
 }
 }
@@ -27,7 +27,7 @@ void draw_monsterDog(STATE *st)
 
 	for (int i=4;i<6;i++) {
 	attron(COLOR_PAIR(COLOR_MAGENTA));
-	mvaddch(st->monstro[i].X, st->monstro[i].Y, 'd' | A_BOLD);
+	mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, 'd' | A_BOLD);
 	attroff(COLOR_PAIR(COLOR_MAGENTA));
 }
 }
@@ -37,7 +37,7 @@ void draw_monsterBat(STATE *st)
 
 	for (int i=6;i<8;i++) {
 	attron(COLOR_PAIR(COLOR_MAGENTA));
-	mvaddch(st->monstro[i].X, st->monstro[i].Y, 'b' | A_BOLD);
+	mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, 'b' | A_BOLD);
 	attroff(COLOR_PAIR(COLOR_MAGENTA));
 }
 }
@@ -45,7 +45,7 @@ void draw_monsterBat(STATE *st)
 void draw_player(STATE *st)
 {
 	attron(COLOR_PAIR(COLOR_WHITE));
-	mvaddch(st->jogador.X, st->jogador.Y, '@' | A_BOLD);
+	mvaddch(st->jogador.coord.X, st->jogador.coord.Y, '@' | A_BOLD);
 	attroff(COLOR_PAIR(COLOR_WHITE));
 }
 
@@ -90,7 +90,7 @@ void draw_light(STATE *st)
 	{
 		for (rY = 1; rY >= -1; rY--)
 		{
-			st->map[st->jogador.X + rX][st->jogador.Y + rY].ilum = 1;
+			st->map[st->jogador.coord.X + rX][st->jogador.coord.Y + rY].ilum = 1;
 		}
 	}
 }
@@ -98,58 +98,58 @@ void draw_light(STATE *st)
 void draw_info(STATE *st) {
 	move(st->jogo.X - 1, 0);
 	attron(COLOR_PAIR(COLOR_BLUE));
-	printw("(%d, %d) %d %d -> %d", st->jogador.X, st->jogador.Y, st->jogo.X, st->jogo.Y, (st->paredes * 100) / (st->jogo.X * st->jogo.Y));
+	printw("(%d, %d) %d %d -> %d", st->jogador.coord.X, st->jogador.coord.Y, st->jogo.X, st->jogo.Y, (st->paredes * 100) / (st->jogo.X * st->jogo.Y));
 	printw(" ");
 	attroff(COLOR_PAIR(COLOR_BLUE));
 }
 
 void do_movement_action(STATE *st, int dx, int dy)
 {
-	st->jogador.X += dx;
-	st->jogador.Y += dy;
+	st->jogador.coord.X += dx;
+	st->jogador.coord.Y += dy;
 }
 
 void movimento_monstros (STATE *st, int i) {
-	if (st->map[st->monstro[i].X][st->monstro[i].Y].dist != 300) {
+	if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist != 300) {
 	 {
-		if (st->map[st->monstro[i].X - 1][st->monstro[i].Y].acessivel == 1 && st->map[st->monstro[i].X - 1][st->monstro[i].Y].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist)
+		if (st->map[st->monstro[i].coord.X - 1][st->monstro[i].coord.Y].acessivel == 1 && st->map[st->monstro[i].coord.X - 1][st->monstro[i].coord.Y].dist < st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist)
 		{
-		st->monstro[i].X = st->monstro[i].X - 1;
+		st->monstro[i].coord.X = st->monstro[i].coord.X - 1;
 		}
 		else {
-			if (st->map[st->monstro[i].X + 1][st->monstro[i].Y].acessivel == 1 && st->map[st->monstro[i].X + 1][st->monstro[i].Y].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist)
+			if (st->map[st->monstro[i].coord.X + 1][st->monstro[i].coord.Y].acessivel == 1 && st->map[st->monstro[i].coord.X + 1][st->monstro[i].coord.Y].dist < st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist)
 		    {
-			st->monstro[i].X = st->monstro[i].X + 1;
+			st->monstro[i].coord.X = st->monstro[i].coord.X + 1;
 		    }
 			else {
-				if (st->map[st->monstro[i].X][st->monstro[i].Y - 1].acessivel == 1 && st->map[st->monstro[i].X][st->monstro[i].Y - 1].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist)
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y - 1].acessivel == 1 && st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y - 1].dist < st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist)
 		        {
-			    st->monstro[i].Y = st->monstro[i].Y - 1;
+			    st->monstro[i].coord.Y = st->monstro[i].coord.Y - 1;
 		        }
 				else {
-					if (st->map[st->monstro[i].X][st->monstro[i].Y + 1].acessivel == 1 && st->map[st->monstro[i].X][st->monstro[i].Y + 1].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist)
+					if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y + 1].acessivel == 1 && st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y + 1].dist < st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist)
 		            {
-			        st->monstro[i].Y = st->monstro[i].Y + 1;
+			        st->monstro[i].coord.Y = st->monstro[i].coord.Y + 1;
 		            }
 					else {
-                       if (st->map[st->monstro[i].X + 1][st->monstro[i].Y + 1].acessivel == 1 && st->map[st->monstro[i].X + 1][st->monstro[i].Y + 1].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist) {
-						st->monstro[i].X = st->monstro[i].X+1;
-						st->monstro[i].Y = st->monstro[i].Y+1;
+                       if (st->map[st->monstro[i].coord.X + 1][st->monstro[i].coord.Y + 1].acessivel == 1 && st->map[st->monstro[i].coord.X + 1][st->monstro[i].coord.Y + 1].dist < st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist) {
+						st->monstro[i].coord.X = st->monstro[i].coord.X+1;
+						st->monstro[i].coord.Y = st->monstro[i].coord.Y+1;
 					   }
 					   else {
-						if (st->map[st->monstro[i].X -1][st->monstro[i].Y -1].acessivel == 1 && st->map[st->monstro[i].X -1][st->monstro[i].Y -1].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist) {
-						st->monstro[i].X = st->monstro[i].X-1;
-                        st->monstro[i].Y = st->monstro[i].Y-1;
+						if (st->map[st->monstro[i].coord.X -1][st->monstro[i].coord.Y -1].acessivel == 1 && st->map[st->monstro[i].coord.X -1][st->monstro[i].coord.Y -1].dist < st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist) {
+						st->monstro[i].coord.X = st->monstro[i].coord.X-1;
+                        st->monstro[i].coord.Y = st->monstro[i].coord.Y-1;
 						}
 						else {
-							if (st->map[st->monstro[i].X-1][st->monstro[i].Y +1].acessivel == 1 && st->map[st->monstro[i].X-1][st->monstro[i].Y +1].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist) {
-                                 st->monstro[i].X = st->monstro[i].X -1;
-								 st->monstro[i].Y=st->monstro[i].Y+1;
+							if (st->map[st->monstro[i].coord.X-1][st->monstro[i].coord.Y +1].acessivel == 1 && st->map[st->monstro[i].coord.X-1][st->monstro[i].coord.Y +1].dist < st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist) {
+                                 st->monstro[i].coord.X = st->monstro[i].coord.X -1;
+								 st->monstro[i].coord.Y=st->monstro[i].coord.Y+1;
 							}
 							else {
-								if (st->map[st->monstro[i].X +1][st->monstro[i].Y-1].acessivel == 1 && st->map[st->monstro[i].X +1][st->monstro[i].Y-1].dist < st->map[st->monstro[i].X][st->monstro[i].Y].dist) {
-								st->monstro[i].X = st->monstro[i].X+1;
-								st->monstro[i].Y = st->monstro[i].Y-1;
+								if (st->map[st->monstro[i].coord.X +1][st->monstro[i].coord.Y-1].acessivel == 1 && st->map[st->monstro[i].coord.X +1][st->monstro[i].coord.Y-1].dist < st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist) {
+								st->monstro[i].coord.X = st->monstro[i].coord.X+1;
+								st->monstro[i].coord.Y = st->monstro[i].coord.Y-1;
 								}
 							}
 						}
@@ -166,195 +166,195 @@ void movimento_monstros (STATE *st, int i) {
 void update(STATE *st)
 {
 	int key = getch();
-	mvaddch(st->jogador.X, st->jogador.Y, '.');
-	if (st->map[st->jogador.X][st->jogador.Y].caracterAtual == '>') st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
-	else st->map[st->jogador.X][st->jogador.Y].acessivel = 1;
+	mvaddch(st->jogador.coord.X, st->jogador.coord.Y, '.');
+	if (st->map[st->jogador.coord.X][st->jogador.coord.Y].caracterAtual == '>') st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
+	else st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 1;
 	switch (key)
 	{
 	case KEY_A1:
 	case '7':
-	    if (st->map[st->jogador.X - 1][st->jogador.Y - 1].acessivel == 1)
+	    if (st->map[st->jogador.coord.X - 1][st->jogador.coord.Y - 1].acessivel == 1)
 		{
 			do_movement_action(st, -1, -1);
-			st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+			st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 		}
 		else {
-			if (st->jogador.X - 1 == st->escada.X && st->jogador.Y - 1== st->escada.Y) {
+			if (st->jogador.coord.X - 1 == st->escada.X && st->jogador.coord.Y - 1== st->escada.Y) {
 			    gerar(st);
 			}
 			else {
-				st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+				st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 			}
 		}
 	    for (int i=0;i<8;i++) {
-		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
 		movimento_monstros(st,i);
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 0;
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
 	    }
 		break;
 	case KEY_UP:
 	case '8':
-	    if (st->map[st->jogador.X - 1][st->jogador.Y].acessivel == 1)
+	    if (st->map[st->jogador.coord.X - 1][st->jogador.coord.Y].acessivel == 1)
 		{
 			do_movement_action(st, -1, +0);
-			st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+			st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 		}
 		else {
-			if (st->jogador.X - 1 == st->escada.X && st->jogador.Y == st->escada.Y) {
+			if (st->jogador.coord.X - 1 == st->escada.X && st->jogador.coord.Y == st->escada.Y) {
 			    gerar(st);
 			}
 			else {
-				st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+				st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 			}
 		}
 	    for (int i=0;i<8;i++) {
-		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
 		movimento_monstros(st,i);
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 0;
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
 	    }
 		break;
 	case KEY_A3:
 	case '9':
-	    if (st->map[st->jogador.X - 1][st->jogador.Y + 1].acessivel == 1)
+	    if (st->map[st->jogador.coord.X - 1][st->jogador.coord.Y + 1].acessivel == 1)
 		{
 			do_movement_action(st, -1, +1);
-			st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+			st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 		}
 		else {
-			if (st->jogador.X - 1 == st->escada.X && st->jogador.Y + 1 == st->escada.Y) {
+			if (st->jogador.coord.X - 1 == st->escada.X && st->jogador.coord.Y + 1 == st->escada.Y) {
 			    gerar(st);
 			}
 			else {
-				st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+				st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 			}
 		}
 	    for (int i=0;i<8;i++) {
-		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
 		movimento_monstros(st,i);
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 0;
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
 	    }
 		break;
 	case KEY_LEFT:
 	case '4':
-	    if (st->map[st->jogador.X][st->jogador.Y - 1].acessivel == 1)
+	    if (st->map[st->jogador.coord.X][st->jogador.coord.Y - 1].acessivel == 1)
 		{
 			do_movement_action(st, +0, -1);
-			st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+			st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 		}
 		else {
-			if (st->jogador.X == st->escada.X && st->jogador.Y - 1 == st->escada.Y) {
+			if (st->jogador.coord.X == st->escada.X && st->jogador.coord.Y - 1 == st->escada.Y) {
 			    gerar(st);
 			}
 			else {
-				st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+				st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 			}
 		}
 	    for (int i=0;i<8;i++) {
-		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
 		movimento_monstros(st,i);
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 0;
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
 	    }
 		break;
 	case KEY_B2:
 	case '5':
-	    st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+	    st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 	    for (int i=0;i<8;i++) {
-		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
 		movimento_monstros(st,i);
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 0;
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
 	    }
 		break;
 	case KEY_RIGHT:
 	case '6':
-	    if (st->map[st->jogador.X][st->jogador.Y + 1].acessivel == 1) 
+	    if (st->map[st->jogador.coord.X][st->jogador.coord.Y + 1].acessivel == 1) 
 		{
 			do_movement_action(st, +0, +1);
-			st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+			st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 		}
 		else {
-			if (st->jogador.X == st->escada.X && st->jogador.Y + 1 == st->escada.Y) {
+			if (st->jogador.coord.X == st->escada.X && st->jogador.coord.Y + 1 == st->escada.Y) {
 			    gerar(st);
 			}
 			else {
-				st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+				st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 			}
 		}
 	    for (int i=0;i<8;i++) {
-		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
 		movimento_monstros(st,i);
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 0;
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
 	    }
 		break;
 	case KEY_C1:
 	case '1':
-	    if (st->map[st->jogador.X + 1][st->jogador.Y - 1].acessivel == 1) 
+	    if (st->map[st->jogador.coord.X + 1][st->jogador.coord.Y - 1].acessivel == 1) 
 		{
 			do_movement_action(st, +1, -1);
-			st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+			st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 		}
 		else {
-			if (st->jogador.X + 1 == st->escada.X && st->jogador.Y - 1 == st->escada.Y) {
+			if (st->jogador.coord.X + 1 == st->escada.X && st->jogador.coord.Y - 1 == st->escada.Y) {
 			    gerar(st);
 			}
 			else {
-				st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+				st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 			}
 		}
 	    for (int i=0;i<8;i++) {
-		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
 		movimento_monstros(st,i);
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 0;
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
 	    }
 		break;
 	case KEY_DOWN:
 	case '2':
-	    if (st->map[st->jogador.X + 1][st->jogador.Y].acessivel == 1)
+	    if (st->map[st->jogador.coord.X + 1][st->jogador.coord.Y].acessivel == 1)
 		{
 			do_movement_action(st, +1, +0);
-			st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+			st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 		}
 		else {
-			if (st->jogador.X + 1 == st->escada.X && st->jogador.Y == st->escada.Y) {
+			if (st->jogador.coord.X + 1 == st->escada.X && st->jogador.coord.Y == st->escada.Y) {
 			    gerar(st);
 			}
 			else {
-				st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+				st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 			}
 		}
 	    for (int i=0;i<8;i++) {
-		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
 		movimento_monstros(st,i);
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 0;
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
 	    }
 		break;
 	case KEY_C3:
 	case '3':
-	    if (st->map[st->jogador.X + 1][st->jogador.Y + 1].acessivel == 1)
+	    if (st->map[st->jogador.coord.X + 1][st->jogador.coord.Y + 1].acessivel == 1)
 		{
 			do_movement_action(st, +1, +1);
-			st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+			st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 		}
 		else {
-			if (st->jogador.X + 1 == st->escada.X && st->jogador.Y + 1 == st->escada.Y) {
+			if (st->jogador.coord.X + 1 == st->escada.X && st->jogador.coord.Y + 1 == st->escada.Y) {
 			    gerar(st);
 			}
 			else {
-				st->map[st->jogador.X][st->jogador.Y].acessivel = 0;
+				st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 			}
 		}
 	    for (int i=0;i<8;i++) {
-		mvaddch(st->monstro[i].X, st->monstro[i].Y, '.');
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 1;
+		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
 		movimento_monstros(st,i);
-		st->map[st->monstro[i].X][st->monstro[i].Y].acessivel = 0;
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
 	    }
 		break;
 	case 'q':
@@ -449,14 +449,14 @@ int main()
 		}
 		draw_light(&st); // acender as luzes pretendidas
 		reset_dist(&st);
-		calc_dist(st.jogador.X, st.jogador.Y, 0, &st);
+		calc_dist(st.jogador.coord.X, st.jogador.coord.Y, 0, &st);
 		draw_map(&st);
 		draw_info(&st);
 		draw_player(&st);
 		draw_monsterRato(&st);
 		draw_monsterDog(&st);
 		draw_monsterBat(&st);
-		move(st.jogador.X, st.jogador.Y);
+		move(st.jogador.coord.X, st.jogador.coord.Y);
 		update(&st);
 	}
 	return 0;
