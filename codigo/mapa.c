@@ -6,6 +6,11 @@
 
 #include "mapa.h"
 
+#define MAX_VIDA_JOGADOR 100
+#define MAX_VIDA_MONSTRO 100
+#define MAX_DURAB_ARMA 100
+
+
 void gerar_coordenadas (STATE *st) {
 	st->jogador.coord.X = lrand48() % st->jogo.X;
 	st->jogador.coord.Y = lrand48() % st->jogo.Y;
@@ -14,6 +19,8 @@ void gerar_coordenadas (STATE *st) {
 	    st->jogador.coord.Y = lrand48() % st->jogo.Y;
 	}
 	st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
+	st->jogador.vida = MAX_VIDA_JOGADOR;
+
 	st->escada.X = lrand48() % st->jogo.X;
 	st->escada.Y = lrand48() % st->jogo.Y;
 	while (st->map[st->escada.X][st->escada.Y].acessivel != 1) {
@@ -21,6 +28,7 @@ void gerar_coordenadas (STATE *st) {
 	    st->escada.Y = lrand48() % st->jogo.Y;
     }
 	st->map[st->escada.X][st->escada.Y].acessivel = 0;
+
 	for (int i = 0; i < 8; i++)
     {
 		st->monstro[i].coord.X = lrand48() % (st->jogo.X);
@@ -32,7 +40,24 @@ void gerar_coordenadas (STATE *st) {
 			st->monstro[i].coord.Y = lrand48() % (st->jogo.Y);
 	    }
 
-	st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+		st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+
+		st->monstro[i].vida = MAX_VIDA_MONSTRO;
+    }
+
+	for (int i = 0; i < 4; i++)
+    {
+		st->arma[i].coord.X = lrand48() % (st->jogo.X);
+		st->arma[i].coord.Y = lrand48() % (st->jogo.Y);
+
+	    while (st->map[st->arma[i].coord.X][st->arma[i].coord.Y].acessivel != 1)
+	    {
+			st->arma[i].coord.X = lrand48() % (st->jogo.X);
+			st->arma[i].coord.Y = lrand48() % (st->jogo.Y);
+	    }
+
+		st->arma[i].durabilidade = MAX_DURAB_ARMA;
+		st->arma[i].equipada = 0;
     }
 }
 
