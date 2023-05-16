@@ -16,12 +16,13 @@ void draw_monsterRato(STATE *st)
 {
 	for (int i = 0; i < 4; i++)
 	{
-	if(st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].ilum == 1) 
+	if(st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].ilum == 1 && st->monstro[i].vida > 0) 
 	{
 		attron(COLOR_PAIR(COLOR_MAGENTA));
 		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, 'r' | A_BOLD);
 		attroff(COLOR_PAIR(COLOR_MAGENTA));
 	}
+	if (st->monstro[i].vida <= 0) st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
 	}
 }
 
@@ -29,12 +30,13 @@ void draw_monsterDog(STATE *st)
 {
 	for (int i = 4; i < 6; i++)
 	{
-	if(st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].ilum == 1) 
+	if(st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].ilum == 1 && st->monstro[i].vida > 0) 
 	{
 		attron(COLOR_PAIR(COLOR_MAGENTA));
 		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, 'd' | A_BOLD);
 		attroff(COLOR_PAIR(COLOR_MAGENTA));
 	}
+	if (st->monstro[i].vida <= 0) st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
 	}
 }
 
@@ -42,12 +44,13 @@ void draw_monsterBat(STATE *st)
 {
 	for (int i = 6; i < 8; i++)
 	{
-	if(st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].ilum == 1) 
+	if(st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].ilum == 1 && st->monstro[i].vida > 0) 
 	{
 		attron(COLOR_PAIR(COLOR_MAGENTA));
 		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, 'b' | A_BOLD);
 		attroff(COLOR_PAIR(COLOR_MAGENTA));
 	}
+	if (st->monstro[i].vida <= 0) st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
 	}
 }
 
@@ -117,21 +120,10 @@ void reset_dist(STATE *st)
 	calc_dist(R + 1, C - 1, value + 1, st);
 	calc_dist(R + 1, C, value + 1, st);
 }
-/*
-void draw_info(STATE *st)
-{
-	move(st->jogo.X - 1, 0);
-	attron(COLOR_PAIR(COLOR_BLUE));
-	printw("(%d, %d) (j=%d %d) %d %d -> %d", st->jogador.coord.X, st->jogador.coord.Y, st->jogador.vida, st->jogador.arma, st->jogo.X, st->jogo.Y, (st->paredes * 100) / (st->jogo.X * st->jogo.Y));
-	printw(" ");
-	attroff(COLOR_PAIR(COLOR_BLUE));
-}
-*/
 
 void draw_info(STATE *st) {
 	move(0, 0);
 	attron(COLOR_PAIR(COLOR_GREEN));
-	//printw(" COORDENADAS DO JOGADOR : (%d, %d) LIMITES MAX DO MAPA : (%d, %d) -> VIDA : %d  NIVEL : %d ARMA ATUAL : faca ACONTECIMEMTO : desceu as escadas", st->jogador.coord.X, st->jogador.coord.Y, st->jogo.X, st->jogo.Y, st->paredes, st->nivel);
 	printw(" | LIMITES MAXIMOS DO MAPA : ");
 	attroff(COLOR_PAIR(COLOR_GREEN));
 	attron(COLOR_PAIR(COLOR_YELLOW));
@@ -159,13 +151,37 @@ void draw_info(STATE *st) {
 	printw(" | ARMA ATUAL : ");
 	attroff(COLOR_PAIR(COLOR_GREEN));
 	attron(COLOR_PAIR(COLOR_YELLOW));
-	printw("faca");
+	if (st->jogador.arma_atual == -1) printw("corpo");
+	else {
+	if (st->jogador.arma_atual >= 0 && st->jogador.arma_atual<2) printw("faca");
+	else {
+	if (st->jogador.arma_atual >= 0 && st->jogador.arma_atual<2) printw("pistola");
+	}
+	}
 	attroff(COLOR_PAIR(COLOR_YELLOW));
 	attron(COLOR_PAIR(COLOR_GREEN));
 	printw(" | ACONTECIMENTO : ");
 	attroff(COLOR_PAIR(COLOR_GREEN));
 	attron(COLOR_PAIR(COLOR_YELLOW));
-	printw("desceu as escadas");
+	if (st->acontecimento == 0) printw("desceu as escadas");
+	else {
+	if (st->acontecimento == 1) printw("em andamento");
+	else {
+	if (st->acontecimento == 2) printw("pegou numa arma");
+	else {
+	if (st->acontecimento == 3) printw("largou uma arma");
+	else {
+	if (st->acontecimento == 4) printw("trocou a arma");
+	else {
+	if (st->acontecimento == 5) printw("foi atacado por um monstro");
+	else {
+	if (st->acontecimento == 6) printw("atacou um monstro e foi atacado por um monstro");
+	}
+	}
+	}	
+	}
+	}
+	}
 	attroff(COLOR_PAIR(COLOR_YELLOW));
 	attron(COLOR_PAIR(COLOR_GREEN));
 	printw(" | ");
@@ -267,6 +283,59 @@ void movimento_monstros (STATE *st, int i)
 	}
 }
 
+void ataque (STATE *st) {
+	st->jogador.vida = st->jogador.vida - 5;
+}
+
+void combate(STATE *st, int i)
+{
+	if (i>=0 && i<4 && st->monstro[i].vida > 0)
+	{
+			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1) // faca
+			{
+				st->monstro[i].vida = st->monstro[i].vida - 50;
+			}
+			if (st->jogador.arma_atual == 2 || st->jogador.arma_atual == 3)
+			{
+				st->monstro[i].vida = st->monstro[i].vida - 50;
+			}
+			else 
+			{
+				st->monstro[i].vida=st->monstro[i].vida -10; // soco;
+			}
+	}
+	if (i>=4 && i<6 && st->monstro[i].vida > 0)
+	{
+			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1) // faca
+			{
+				st->monstro[i].vida = st->monstro[i].vida - 20;
+			}
+			if (st->jogador.arma_atual == 2 || st->jogador.arma_atual == 3)
+			{
+				st->monstro[i].vida = st->monstro[i].vida - 20;
+			}
+			else 
+			{
+				st->monstro[i].vida=st->monstro[i].vida -10; // soco;
+			}
+	}
+	if (i>=6 && i<8 && st->monstro[i].vida > 0)
+	{
+			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1) // faca
+			{
+				st->monstro[i].vida = st->monstro[i].vida - 50;
+			}
+			if (st->jogador.arma_atual == 2 || st->jogador.arma_atual == 3)
+			{
+				st->monstro[i].vida = st->monstro[i].vida - 50;
+			}
+			else 
+			{
+				st->monstro[i].vida=st->monstro[i].vida -10; // soco;
+			}
+	}
+}
+
 void get_arma (STATE *st)
 {
 	int i, stop;
@@ -276,7 +345,9 @@ void get_arma (STATE *st)
 	{
 		if (st->arma[i].equipada != 1 && st->map[st->arma[i].coord.X][st->arma[i].coord.Y].dist == 0)
 		{
+			st->acontecimento = 2;
 			st->jogador.arma = i;
+			st->jogador.arma_atual = i;
 			st->arma[i].equipada = 1;
 			stop = 1;
 		}
@@ -285,14 +356,24 @@ void get_arma (STATE *st)
 
 void put_arma (STATE *st)
 {
+	if (st->jogador.arma != -1) st->acontecimento = 3;
 	st->arma[st->jogador.arma].equipada = 0;
 	st->arma[st->jogador.arma].coord.X = st->jogador.coord.X;
 	st->arma[st->jogador.arma].coord.Y = st->jogador.coord.Y;
 	st->jogador.arma = -1;
+	st->jogador.arma_atual = -1;
+}
+
+void troca (STATE *st) {
+	if (st->jogador.arma_atual == -1) st->jogador.arma_atual = st->jogador.arma;
+	else {
+		st->jogador.arma_atual = -1;
+	}
 }
 
 void update(STATE *st)
 {
+	st->acontecimento = 1;
 	int key = getch();
 	mvaddch(st->jogador.coord.X, st->jogador.coord.Y, '.');
 	if (st->map[st->jogador.coord.X][st->jogador.coord.Y].caracterAtual == '>') st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
@@ -314,10 +395,13 @@ void update(STATE *st)
 				}
 			}
 			for (int i=0;i<8;i++) {
-				mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
-				movimento_monstros(st,i);
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
 			}
 			break;
 		case KEY_UP:
@@ -336,10 +420,13 @@ void update(STATE *st)
 				}
 			}
 			for (int i=0;i<8;i++) {
-				mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
-				movimento_monstros(st,i);
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
 			}
 			break;
 		case KEY_A3:
@@ -358,10 +445,13 @@ void update(STATE *st)
 				}
 			}
 			for (int i=0;i<8;i++) {
-				mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
-				movimento_monstros(st,i);
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
 			}
 			break;
 		case KEY_LEFT:
@@ -380,20 +470,26 @@ void update(STATE *st)
 				}
 			}
 			for (int i=0;i<8;i++) {
-				mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
-				movimento_monstros(st,i);
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
 			}
 			break;
 		case KEY_B2:
 		case '5':
 			st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 			for (int i=0;i<8;i++) {
-				mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
-				movimento_monstros(st,i);
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
 			}
 			break;
 		case KEY_RIGHT:
@@ -412,10 +508,13 @@ void update(STATE *st)
 				}
 			}
 			for (int i=0;i<8;i++) {
-				mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
-				movimento_monstros(st,i);
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
 			}
 			break;
 		case KEY_C1:
@@ -434,10 +533,13 @@ void update(STATE *st)
 				}
 			}
 			for (int i=0;i<8;i++) {
-				mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
-				movimento_monstros(st,i);
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
 			}
 			break;
 		case KEY_DOWN:
@@ -456,10 +558,13 @@ void update(STATE *st)
 				}
 			}
 			for (int i=0;i<8;i++) {
-				mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
-				movimento_monstros(st,i);
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
 			}
 			break;
 		case KEY_C3:
@@ -478,17 +583,193 @@ void update(STATE *st)
 				}
 			}
 			for (int i=0;i<8;i++) {
-				mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
-				movimento_monstros(st,i);
-				st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
 			}
 			break;
-		case 'a':
+	case 'X':
+	case 'x':
+	        for (int i=0;i<8;i++) {
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) &&
+				((st->monstro[i].coord.Y == st->jogador.coord.Y) && (st->monstro[i].coord.X) == st->jogador.coord.X + 1))
+			{
+				combate(st,i);
+				st->acontecimento = 6;
+				break;
+			}
+			}
+			for (int i=0;i<8;i++) {
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);if (st->acontecimento != 6) st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
+			}
+		    break;
+	case 'W':
+	case 'w':
+	        for (int i=0;i<8;i++) {
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) &&
+				((st->monstro[i].coord.Y == st->jogador.coord.Y) && (st->monstro[i].coord.X) == st->jogador.coord.X - 1))
+			{
+				combate(st,i);
+				st->acontecimento = 6;
+				break;
+			}
+			}
+			for (int i=0;i<8;i++) {
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);if (st->acontecimento != 6) st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
+			}
+		    break;
+	case 'A':
+	case 'a':
+	        for (int i=0;i<8;i++) {
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) &&
+				((st->monstro[i].coord.X == st->jogador.coord.X) && (st->monstro[i].coord.Y) == st->jogador.coord.Y - 1))
+			{
+				combate(st,i);
+				st->acontecimento = 6;
+				break;
+			}
+			}
+			for (int i=0;i<8;i++) {
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);if (st->acontecimento != 6) st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
+			}
+		    break;
+	case 'D':
+	case 'd':
+	        for (int i=0;i<8;i++) {
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) &&
+				((st->monstro[i].coord.X == st->jogador.coord.X) && (st->monstro[i].coord.X) == st->jogador.coord.X + 1))
+			{
+				combate(st,i);
+				st->acontecimento = 6;
+				break;
+		    }
+			}
+			for (int i=0;i<8;i++) {
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);if (st->acontecimento != 6) st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
+			}
+		    break;
+	case 'Q':
+	case 'q':
+	        for (int i=0;i<8;i++) {
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) &&
+				((st->monstro[i].coord.Y == st->jogador.coord.Y - 1) && (st->monstro[i].coord.X) == st->jogador.coord.X - 1))
+			{
+				combate(st,i);
+				st->acontecimento = 6;
+				break;
+			}
+			}for (int i=0;i<8;i++) {
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);if (st->acontecimento != 6) st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
+			}
+		    break;
+	case 'E':
+	case 'e':
+	        for (int i=0;i<8;i++) {
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) &&
+				((st->monstro[i].coord.Y == st->jogador.coord.Y + 1) && (st->monstro[i].coord.X) == st->jogador.coord.X - 1))
+			{
+				combate(st,i);
+				st->acontecimento = 6;
+				break;
+			}
+			}
+			for (int i=0;i<8;i++) {
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);if (st->acontecimento != 6) st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
+			}
+		    break;
+	case 'Z':
+	case 'z':
+	        for (int i=0;i<8;i++) {
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) &&
+				((st->monstro[i].coord.X == st->jogador.coord.X + 1) && (st->monstro[i].coord.Y) == st->jogador.coord.Y - 1))
+			{
+				combate(st,i);
+				st->acontecimento = 6;
+				break;
+			}
+			}
+			for (int i=0;i<8;i++) {
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);if (st->acontecimento != 6) st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
+			}
+		    break;
+	case 'C':
+	case 'c':
+	        for (int i=0;i<8;i++) {
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) &&
+				((st->monstro[i].coord.X == st->jogador.coord.X + 1) && (st->monstro[i].coord.X) == st->jogador.coord.X + 1))
+			{
+				combate(st,i);
+				st->acontecimento = 6;
+				break;
+		    }
+			}
+			for (int i=0;i<8;i++) {
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1) {ataque(st);if (st->acontecimento != 6) st->acontecimento = 5;}
+				else {
+					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
+				    movimento_monstros(st,i);
+				    st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 0;
+				}
+			}
+		    break;
+	case '+':
 			if (st->jogador.arma == -1) get_arma (st);
 			else put_arma (st);
 			break;
-		case 'q':
+	case 'S':
+	case 's':
+			troca(st);
+			st->acontecimento = 4;
+			break;
+	case 'L':
+	case 'l':
 			endwin();
 			exit(0);
 			break;
@@ -589,9 +870,10 @@ int main()
 	getmaxyx(wnd, nrows, ncols);
 	st.jogo.X = nrows;
 	st.jogo.Y = ncols;
-	st.paredes = 0;
 	st.nivel = 0;
 	st.jogador.arma = -1;
+	st.jogador.corpo = -1;
+	st.jogador.arma_atual = -1;
 	st.jogador.vida = 100;
 
 	srand48(time(NULL));
@@ -614,6 +896,11 @@ int main()
 	gerar(&st);
 	while (1)
 	{
+		if (st.jogador.vida <= 0) {
+			endwin();
+			exit(0);
+			break;
+		}
 		for (int x = 0; x < st.jogo.X; x++)
 		{
 			for (int y = 0; y < st.jogo.Y; y++)

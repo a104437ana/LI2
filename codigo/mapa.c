@@ -337,7 +337,7 @@ void gerar(STATE *st) {
 
 	for (x = 0; x < st->jogo.X; x++) {
 		for (y = 0; y < st->jogo.Y ; y++) {
-			if (st->map[x][y].caracterAtual == '#') {(st->paredes)++; st->map[x][y].acessivel = -1;}
+			if (st->map[x][y].caracterAtual == '#') st->map[x][y].acessivel = -1;
 			if (st->map[x][y].caracterAtual == '+') st->map[x][y].acessivel = 1;
 		}
 	}
@@ -346,10 +346,11 @@ void gerar(STATE *st) {
 		st->sala[i].Y = 0;
 	}
 	gerar_coordenadas(st);
-	st->map[st->escada.X][st->escada.Y].caracterAtual = '>';
+	st->map[st->escada.X][st->escada.Y].caracterAtual = '/';
 	st->map[st->jogador.coord.X][st->jogador.coord.Y].caracterAtual = '>';
 	gerar_seeds(st);
 	st->nivel ++;
+	st->acontecimento = 0;
 
 	for (int x = 0; x < st->jogo.X; x++)
 		{

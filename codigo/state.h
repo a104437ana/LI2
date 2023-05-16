@@ -9,7 +9,9 @@ typedef struct coordenadas {
 typedef struct jogador {
 	struct coordenadas coord;
 	int vida;
+	int arma_atual;
 	int arma; // indice da arma que o jogador tem, -1 se não equipado;
+	int corpo;
 } JOGADOR;
 
 typedef struct monstro {
@@ -33,8 +35,8 @@ typedef struct mapa {
 } MAPA;
 
 typedef struct state {
+	int acontecimento;
 	int nivel;
-	int paredes;
 	int seed[8][2];
 	struct coordenadas jogo;
 	struct coordenadas escada;
