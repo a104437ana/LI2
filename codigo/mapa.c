@@ -10,6 +10,24 @@
 #define MAX_VIDA_MONSTRO 100
 #define MAX_DURAB_ARMA 100
 
+void gerar_seeds (STATE *st) {
+	st->seed[0][0] = lrand48();
+	st->seed[1][0] = lrand48();
+	st->seed[2][0] = lrand48();
+	st->seed[3][0] = lrand48();
+	st->seed[4][0] = lrand48();
+	st->seed[5][0] = lrand48();
+	st->seed[6][0] = lrand48();
+	st->seed[7][0] = lrand48();
+	st->seed[0][1] = lrand48();
+	st->seed[1][1] = lrand48();
+	st->seed[2][1] = lrand48();
+	st->seed[3][1] = lrand48();
+	st->seed[4][1] = lrand48();
+	st->seed[5][1] = lrand48();
+	st->seed[6][1] = lrand48();
+	st->seed[7][1] = lrand48();
+}
 
 void gerar_coordenadas (STATE *st) {
 	st->jogador.coord.X = lrand48() % st->jogo.X;
@@ -330,5 +348,15 @@ void gerar(STATE *st) {
 	gerar_coordenadas(st);
 	st->map[st->escada.X][st->escada.Y].caracterAtual = '>';
 	st->map[st->jogador.coord.X][st->jogador.coord.Y].caracterAtual = '>';
+	gerar_seeds(st);
+	st->nivel ++;
+
+	for (int x = 0; x < st->jogo.X; x++)
+		{
+			for (int y = 0; y < st->jogo.Y; y++)
+			{
+				st->map[x][y].acessado = 0;
+			}
+		}
 }
 

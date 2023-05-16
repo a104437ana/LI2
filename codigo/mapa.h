@@ -1,5 +1,6 @@
 #include "state.h"
 
+void gerar_seeds (STATE *st);
 void gerar_coordenadas (STATE *st);
 int raio (STATE *st, int x, int y, int r);
 void first_map (STATE *st);

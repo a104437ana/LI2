@@ -28,11 +28,14 @@ typedef struct mapa {
 	char caracterAnterior;
 	int acessivel;
 	int dist;
-	int ilum; //1 se iluminado, 0 se não iluminado
+	int ilum;
+	int acessado;
 } MAPA;
 
 typedef struct state {
+	int nivel;
 	int paredes;
+	int seed[8][2];
 	struct coordenadas jogo;
 	struct coordenadas escada;
 	struct coordenadas sala[50];

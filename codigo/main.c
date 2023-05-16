@@ -117,7 +117,7 @@ void reset_dist(STATE *st)
 	calc_dist(R + 1, C - 1, value + 1, st);
 	calc_dist(R + 1, C, value + 1, st);
 }
-
+/*
 void draw_info(STATE *st)
 {
 	move(st->jogo.X - 1, 0);
@@ -126,7 +126,51 @@ void draw_info(STATE *st)
 	printw(" ");
 	attroff(COLOR_PAIR(COLOR_BLUE));
 }
+*/
 
+void draw_info(STATE *st) {
+	move(0, 0);
+	attron(COLOR_PAIR(COLOR_GREEN));
+	//printw(" COORDENADAS DO JOGADOR : (%d, %d) LIMITES MAX DO MAPA : (%d, %d) -> VIDA : %d  NIVEL : %d ARMA ATUAL : faca ACONTECIMEMTO : desceu as escadas", st->jogador.coord.X, st->jogador.coord.Y, st->jogo.X, st->jogo.Y, st->paredes, st->nivel);
+	printw(" | LIMITES MAXIMOS DO MAPA : ");
+	attroff(COLOR_PAIR(COLOR_GREEN));
+	attron(COLOR_PAIR(COLOR_YELLOW));
+	printw("(%d,%d)", st->jogo.X, st->jogo.Y);
+	attroff(COLOR_PAIR(COLOR_YELLOW));
+	attron(COLOR_PAIR(COLOR_GREEN));
+	printw(" | COORDENADAS : ");
+	attroff(COLOR_PAIR(COLOR_GREEN));
+	attron(COLOR_PAIR(COLOR_YELLOW));
+	printw("(%d,%d)", st->jogador.coord.X, st->jogador.coord.Y);
+	attroff(COLOR_PAIR(COLOR_YELLOW));
+	attron(COLOR_PAIR(COLOR_GREEN));
+	printw(" | NIVEL : ");
+	attroff(COLOR_PAIR(COLOR_GREEN));
+	attron(COLOR_PAIR(COLOR_YELLOW));
+	printw("%d",st->nivel);
+	attroff(COLOR_PAIR(COLOR_YELLOW));
+	attron(COLOR_PAIR(COLOR_GREEN));
+	printw(" | VIDA : ");
+	attroff(COLOR_PAIR(COLOR_GREEN));
+	attron(COLOR_PAIR(COLOR_YELLOW));
+	printw("%d", st->jogador.vida);
+	attroff(COLOR_PAIR(COLOR_YELLOW));
+	attron(COLOR_PAIR(COLOR_GREEN));
+	printw(" | ARMA ATUAL : ");
+	attroff(COLOR_PAIR(COLOR_GREEN));
+	attron(COLOR_PAIR(COLOR_YELLOW));
+	printw("faca");
+	attroff(COLOR_PAIR(COLOR_YELLOW));
+	attron(COLOR_PAIR(COLOR_GREEN));
+	printw(" | ACONTECIMENTO : ");
+	attroff(COLOR_PAIR(COLOR_GREEN));
+	attron(COLOR_PAIR(COLOR_YELLOW));
+	printw("desceu as escadas");
+	attroff(COLOR_PAIR(COLOR_YELLOW));
+	attron(COLOR_PAIR(COLOR_GREEN));
+	printw(" | ");
+	attroff(COLOR_PAIR(COLOR_GREEN));
+}
 void do_movement_action(STATE *st, int dx, int dy)
 {
 	st->jogador.coord.X += dx;
@@ -203,6 +247,22 @@ void movimento_monstros (STATE *st, int i)
 			st->monstro[i].coord.X = st->monstro[i].coord.X+1;
 			st->monstro[i].coord.Y = st->monstro[i].coord.Y-1;
 			return;
+		}
+	}
+	else {
+		signed int x, y;
+		x = 0;
+		y = 0;
+		if (st->seed[i][0] % 3 == 0) x = -1;
+		if (st->seed[i][0] % 3 == 1) x = 0;
+        if (st->seed[i][0] % 3 == 2) x = 1;
+		if (st->seed[i][1] % 3 == 0) y = -1;
+		if (st->seed[i][1] % 3 == 1) y = 0;
+        if (st->seed[i][1] % 3 == 2) y = 1;
+		if (st->map[st->monstro[i].coord.X + x][st->monstro[i].coord.Y + y].acessivel == 1) 
+		{
+			st->monstro[i].coord.X = st->monstro[i].coord.X + x;
+			st->monstro[i].coord.Y = st->monstro[i].coord.Y + y;
 		}
 	}
 }
@@ -455,6 +515,7 @@ void iluminacao(STATE *st)
 		while (1)
 		{
 			st->map[(int)(x)][(int)(y)].ilum = 1;
+			st->map[(int)(x)][(int)(y)].acessado = 1;
 			if (st->map[(int)(x)][(int)(y)].caracterAtual == '#') break;
 			x = x + xVetor;
 			y = y + yVetor;
@@ -471,7 +532,7 @@ void draw_map(STATE *st)
 	{
 		for (y = 0; y < st->jogo.Y; y++)
 		{
-			if (st->map[x][y].ilum == 0)
+			if (st->map[x][y].ilum == 0 && st->map[x][y].acessado == 0)
             {  
 				attron(COLOR_PAIR(COLOR_BLUE));
 				mvaddch(x, y, ' ' | A_BOLD);
@@ -480,10 +541,16 @@ void draw_map(STATE *st)
 			}
 			else
 			{
+				if (st->map[x][y].ilum == 0 && st->map[x][y].acessado == 1) {
+					attron(COLOR_PAIR(COLOR_BLUE));
+				    mvaddch(x, y, st->map[x][y].caracterAtual | A_BOLD);
+				    attroff(COLOR_PAIR(COLOR_BLUE));
+				} else 
+				{
 				attron(COLOR_PAIR(COLOR_WHITE));
 				mvaddch(x, y, st->map[x][y].caracterAtual | A_BOLD);
 				attroff(COLOR_PAIR(COLOR_WHITE));
-				
+				}
 			}
 		}
 	
@@ -523,7 +590,9 @@ int main()
 	st.jogo.X = nrows;
 	st.jogo.Y = ncols;
 	st.paredes = 0;
+	st.nivel = 0;
 	st.jogador.arma = -1;
+	st.jogador.vida = 100;
 
 	srand48(time(NULL));
 	start_color();
@@ -549,9 +618,10 @@ int main()
 		{
 			for (int y = 0; y < st.jogo.Y; y++)
 			{
-				st.map[x][y].ilum = 0; // antes da função draw_ligth apagamos as luzes todas
+				st.map[x][y].ilum = 0;
 			}
 		}
+		gerar_seeds(&st);
 		iluminacao(&st);
 		reset_dist(&st);
 		calc_dist(st.jogador.coord.X, st.jogador.coord.Y, 0, &st);
