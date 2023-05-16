@@ -65,18 +65,36 @@ void gerar_coordenadas (STATE *st) {
 
 	for (int i = 0; i < 4; i++)
     {
-		st->arma[i].coord.X = lrand48() % (st->jogo.X);
-		st->arma[i].coord.Y = lrand48() % (st->jogo.Y);
-
-	    while (st->map[st->arma[i].coord.X][st->arma[i].coord.Y].acessivel != 1)
-	    {
+		do
+		{
 			st->arma[i].coord.X = lrand48() % (st->jogo.X);
 			st->arma[i].coord.Y = lrand48() % (st->jogo.Y);
-	    }
-
+		}
+		while (st->map[st->arma[i].coord.X][st->arma[i].coord.Y].acessivel != 1);
+		
 		st->arma[i].durabilidade = MAX_DURAB_ARMA;
 		st->arma[i].equipada = 0;
     }
+
+	// criação de poções
+	int num_pocao = (lrand48() % NUM_MAX_POCOES) + 1;
+
+	for (int i = 0; i < num_pocao; i++)
+    {
+		do 
+		{
+			st->pocao[i].coord.X = lrand48() % (st->jogo.X);
+			st->pocao[i].coord.Y = lrand48() % (st->jogo.Y);
+		}
+	    while (st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].acessivel != 1);
+	    
+		st->pocao[i].tipo = lrand48() % NUM_MAX_POCOES;
+		st->pocao[i].gerada = 1;
+    }
+	for (int i = num_pocao; i < NUM_MAX_POCOES; i++) 
+	{
+		st->pocao[i].gerada = 0;
+	}
 }
 
 int raio (STATE *st, int x, int y, int r) {

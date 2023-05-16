@@ -1,6 +1,12 @@
 #ifndef ___STATE_H___
 #define ___STATE_H___
 
+#define MAX_VIDA_JOGADOR 100
+#define MIN_VIDA_JOGADOR 0
+#define MAX_VIDA_MONSTRO 100
+#define MAX_DURAB_ARMA 100
+#define NUM_MAX_POCOES 3
+
 typedef struct coordenadas {
 	int X;
 	int Y;
@@ -25,6 +31,12 @@ typedef struct arma {
 	int equipada; // 1 se o jogador pegou na arma, 0 se está no chão;
 } ARMA;
 
+typedef struct pocao {
+	struct coordenadas coord;
+	int tipo;
+	int gerada;
+} POCOES;
+
 typedef struct mapa {
 	char caracterAtual;
 	char caracterAnterior;
@@ -44,6 +56,7 @@ typedef struct state {
 	struct jogador jogador;
 	struct monstro monstro[8];
 	struct arma arma[4];
+	struct pocao pocao[NUM_MAX_POCOES];
 	struct mapa map[60][250];
 } STATE;
 

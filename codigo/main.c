@@ -11,6 +11,9 @@
 #define MAX_ROW 60	// x
 #define MAX_COL 250 // y
 #define SHOW_DIST 0
+#define SMALL_POTION 20
+#define LARGE_POTION 50
+#define POISON -20
 
 void draw_monsterRato(STATE *st)
 {
@@ -80,11 +83,52 @@ void draw_arma_pistola (STATE *st)
 	}
 }
 
+void draw_pocao (STATE *st)
+{
+	int i;
+	for (i = 0; i < NUM_MAX_POCOES; i++)
+	{
+		if (st->pocao[i].gerada && st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].ilum == 1)
+		{
+			attron(COLOR_PAIR(COLOR_GREEN));
+			mvaddch(st->pocao[i].coord.X, st->pocao[i].coord.Y, '!' | A_BOLD);
+			attroff(COLOR_PAIR(COLOR_GREEN));
+		}
+	}
+}
+
 void draw_player(STATE *st)
 {
 	attron(COLOR_PAIR(COLOR_WHITE));
 	mvaddch(st->jogador.coord.X, st->jogador.coord.Y, '@' | A_BOLD);
 	attroff(COLOR_PAIR(COLOR_WHITE));
+}
+
+void efeito_pocao (STATE *st)
+{
+	for (int i = 0; i < NUM_MAX_POCOES; i++)
+	{
+		if (st->pocao[i].gerada && st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].dist == 0)
+		{
+			switch (st->pocao[i].tipo)
+			{
+			case 0: // veneno
+				st->jogador.vida += POISON;
+				break;
+			case 1: // poção "pequena" (comida)
+				st->jogador.vida += SMALL_POTION;
+				break;
+			case 2: // poção "grande"
+				st->jogador.vida += LARGE_POTION;
+				break;
+			}
+		// destruir poção depois de usada
+		st->pocao[i].gerada = 0;
+		}
+	}
+	if (st->jogador.vida < MIN_VIDA_JOGADOR) st->jogador.vida = MIN_VIDA_JOGADOR;
+	if (st->jogador.vida > MAX_VIDA_JOGADOR) st->jogador.vida = MAX_VIDA_JOGADOR;
+	
 }
 
 void reset_dist(STATE *st)
@@ -762,6 +806,7 @@ void update(STATE *st)
 	case '+':
 			if (st->jogador.arma == -1) get_arma (st);
 			else put_arma (st);
+			efeito_pocao (st);
 			break;
 	case 'S':
 	case 's':
@@ -874,7 +919,7 @@ int main()
 	st.jogador.arma = -1;
 	st.jogador.corpo = -1;
 	st.jogador.arma_atual = -1;
-	st.jogador.vida = 100;
+	//st.jogador.vida = 100;
 
 	srand48(time(NULL));
 	start_color();
@@ -915,6 +960,7 @@ int main()
 		draw_map(&st);
 		draw_arma_faca(&st);
 		draw_arma_pistola(&st);
+		draw_pocao(&st);
 		draw_monsterRato(&st);
 		draw_monsterDog(&st);
 		draw_monsterBat(&st);
