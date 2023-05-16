@@ -16,9 +16,12 @@ void draw_monsterRato(STATE *st)
 {
 	for (int i = 0; i < 4; i++)
 	{
+	if(st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].ilum == 1) 
+	{
 		attron(COLOR_PAIR(COLOR_MAGENTA));
 		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, 'r' | A_BOLD);
 		attroff(COLOR_PAIR(COLOR_MAGENTA));
+	}
 	}
 }
 
@@ -26,9 +29,12 @@ void draw_monsterDog(STATE *st)
 {
 	for (int i = 4; i < 6; i++)
 	{
+	if(st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].ilum == 1) 
+	{
 		attron(COLOR_PAIR(COLOR_MAGENTA));
 		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, 'd' | A_BOLD);
 		attroff(COLOR_PAIR(COLOR_MAGENTA));
+	}
 	}
 }
 
@@ -36,9 +42,12 @@ void draw_monsterBat(STATE *st)
 {
 	for (int i = 6; i < 8; i++)
 	{
+	if(st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].ilum == 1) 
+	{
 		attron(COLOR_PAIR(COLOR_MAGENTA));
 		mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, 'b' | A_BOLD);
 		attroff(COLOR_PAIR(COLOR_MAGENTA));
+	}
 	}
 }
 
@@ -46,7 +55,7 @@ void draw_arma_faca (STATE *st)
 {
 	for (int i = 0; i < 2; i++)
 	{
-		if (st->arma[i].equipada != 1)
+		if (st->arma[i].equipada != 1 && st->map[st->arma[i].coord.X][st->arma[i].coord.Y].ilum == 1)
 		{
 			attron(COLOR_PAIR(COLOR_YELLOW));
 			mvaddch(st->arma[i].coord.X, st->arma[i].coord.Y, 'f' | A_BOLD);
@@ -59,7 +68,7 @@ void draw_arma_pistola (STATE *st)
 {
 	for (int i = 2; i < 4; i++)
 	{
-		if (st->arma[i].equipada != 1)
+		if (st->arma[i].equipada != 1 && st->map[st->arma[i].coord.X][st->arma[i].coord.Y].ilum == 1)
 		{
 			attron(COLOR_PAIR(COLOR_YELLOW));
 			mvaddch(st->arma[i].coord.X, st->arma[i].coord.Y, 'p' | A_BOLD);
@@ -107,18 +116,6 @@ void reset_dist(STATE *st)
 	calc_dist(R, C - 1, value + 1, st);
 	calc_dist(R + 1, C - 1, value + 1, st);
 	calc_dist(R + 1, C, value + 1, st);
-}
-
-void draw_light(STATE *st)
-{
-	signed int rX, rY;
-	for (rX = 1; rX >= -1; rX--)
-	{
-		for (rY = 1; rY >= -1; rY--)
-		{
-			st->map[st->jogador.coord.X + rX][st->jogador.coord.Y + rY].ilum = 1;
-		}
-	}
 }
 
 void draw_info(STATE *st)
@@ -438,7 +435,35 @@ void update(STATE *st)
 	}
 }
 
+void iluminacao(STATE *st)
+{
+	float angulo = 0;
+	float xVetor;
+	float yVetor;
+	float x;
+	float y;
 
+	while (angulo >= 0 && angulo <= 360)
+	{
+		x = st->jogador.coord.X;
+		y = st->jogador.coord.Y;
+		// ordenada = (st->jogador.coord.X) - ((st->jogador.coord.Y) * tan(angulo));
+		//  determinar o vetor diretor d areta
+		xVetor = sin(angulo) - 0;
+		yVetor = cos(angulo) - 0;
+
+		while (1)
+		{
+			st->map[(int)(x)][(int)(y)].ilum = 1;
+			if (st->map[(int)(x)][(int)(y)].caracterAtual == '#') break;
+			x = x + xVetor;
+			y = y + yVetor;
+		}
+
+		angulo = angulo + 1;
+	}
+}
+ 
 void draw_map(STATE *st)
 {
 	int x, y;
@@ -447,41 +472,46 @@ void draw_map(STATE *st)
 		for (y = 0; y < st->jogo.Y; y++)
 		{
 			if (st->map[x][y].ilum == 0)
-			{
+            {  
 				attron(COLOR_PAIR(COLOR_BLUE));
-				mvaddch(x, y, st->map[x][y].caracterAtual | A_BOLD);
+				mvaddch(x, y, ' ' | A_BOLD);
 				attroff(COLOR_PAIR(COLOR_BLUE));
+
 			}
 			else
 			{
 				attron(COLOR_PAIR(COLOR_WHITE));
 				mvaddch(x, y, st->map[x][y].caracterAtual | A_BOLD);
 				attroff(COLOR_PAIR(COLOR_WHITE));
+				
+			}
+		}
+	
+	}
+
+	if (SHOW_DIST)
+	{
+		for (x = 0; x < st->jogo.X; x++)
+		{
+			for (y = 0; y < st->jogo.Y; y++)
+			{
+				if (st->map[x][y].dist < 10)
+				{
+					attron(COLOR_PAIR(COLOR_MAGENTA));
+					mvaddch(x, y, (st->map[x][y].dist + '0'));
+					attroff(COLOR_PAIR(COLOR_MAGENTA));
+				}
+				else
+				{
+					attron(COLOR_PAIR(COLOR_CYAN));
+					mvaddch(x, y, ((st->map[x][y].dist % 10) + '0'));
+					attroff(COLOR_PAIR(COLOR_CYAN));
+				}
 			}
 		}
 	}
-	if (SHOW_DIST)
-	{
-	for (x = 0; x < st->jogo.X; x++)
-	{
-		for (y = 0; y < st->jogo.Y; y++)
-		{
-		if (st->map[x][y].dist < 10)
-		{
-			attron(COLOR_PAIR(COLOR_MAGENTA));
-			mvaddch(x, y, (st->map[x][y].dist + '0'));
-			attroff(COLOR_PAIR(COLOR_MAGENTA));
-		}
-		else
-		{
-			attron(COLOR_PAIR(COLOR_CYAN));
-			mvaddch(x, y, ((st->map[x][y].dist % 10) + '0'));
-			attroff(COLOR_PAIR(COLOR_CYAN));
-		}
-		}
-	}
 }
-}
+
 
 
 int main() 
@@ -522,7 +552,7 @@ int main()
 				st.map[x][y].ilum = 0; // antes da função draw_ligth apagamos as luzes todas
 			}
 		}
-		draw_light(&st); // acender as luzes pretendidas
+		iluminacao(&st);
 		reset_dist(&st);
 		calc_dist(st.jogador.coord.X, st.jogador.coord.Y, 0, &st);
 		draw_map(&st);
