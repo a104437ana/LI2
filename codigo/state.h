@@ -9,7 +9,7 @@
 #define MIN_VIDA_JOGADOR 0
 #define MAX_VIDA_MONSTRO 100
 #define MAX_DURAB_ARMA 100
-#define NUM_MAX_POCOES 3
+#define NUM_MAX_POCOES 7
 #define SMALL_POTION 20
 #define LARGE_POTION 50
 #define POISON -20
