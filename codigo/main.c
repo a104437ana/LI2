@@ -410,15 +410,15 @@ void movimento_monstros (STATE *st, int i)
 void ataque (STATE *st, int i) {
 	if ((i >= 0 && i < 4) && st->monstro[i].vida > 0)
 	{
-		st->jogador.vida = st->jogador.vida - 15;
+		st->jogador.vida = st->jogador.vida - 15; // 7 mordidas
 	}
 	if ((i >= 4 && i < 6) && st->monstro[i].vida > 0)
 	{
-		st->jogador.vida = st->jogador.vida - 20;
+		st->jogador.vida = st->jogador.vida - 20; // 5 mordidas
 	}
-	if ((i = 6 && i <= 8) && st->monstro[i].vida > 0)
+	if ((i >= 6 && i < 8) && st->monstro[i].vida > 0)
 	{
-		st->jogador.vida = st->jogador.vida - 15;
+		st->jogador.vida = st->jogador.vida - 15; // 7 mordidas
 	}
 }
 
@@ -431,19 +431,19 @@ void tiros (STATE *st, int a, int b) {
 			if (x == st->monstro[i].coord.X && y == st->monstro[i].coord.Y) {
 				if (i >=0 && i <4)
 			   {
-				st->monstro[i].vida = st->monstro[i].vida - 20;
+				st->monstro[i].vida = st->monstro[i].vida - 25; // 4 tiros
 				monstro = 0;
 				break;
 			   }
 			   if (i >= 4 && i < 6)
 			   {
-				st->monstro[i].vida = st->monstro[i].vida - 25;
+				st->monstro[i].vida = st->monstro[i].vida - 15; // 7 tiros
 				monstro = 0;
 				break;
 			   }
 			   if (i >= 6 && i<8)
 			   {
-				st->monstro[i].vida=st->monstro[i].vida - 20;
+				st->monstro[i].vida=st->monstro[i].vida - 20; // 5 tiros
 				monstro=0;
 				break;
 			   }
@@ -460,35 +460,35 @@ void combate(STATE *st, int i)
 {
 	if (i>=0 && i<4 && st->monstro[i].vida > 0)
 	{
-			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1) // faca
+			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1) 
 			{
-				st->monstro[i].vida = st->monstro[i].vida - 50;
+				st->monstro[i].vida = st->monstro[i].vida - 50; // 2 facadas
 			}
 			else 
 			{
-				st->monstro[i].vida=st->monstro[i].vida - 10; // soco;
+				st->monstro[i].vida=st->monstro[i].vida - 17; // 6 socos
 			}
 	}
 	if (i>=4 && i<6 && st->monstro[i].vida > 0)
 	{
-			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1) // faca
+			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1)
 			{
-				st->monstro[i].vida = st->monstro[i].vida - 35;
+				st->monstro[i].vida = st->monstro[i].vida - 35; // 3 facadas
 			}
 			else 
 			{
-				st->monstro[i].vida=st->monstro[i].vida - 10; // soco;
+				st->monstro[i].vida=st->monstro[i].vida - 25; // 4 socos
 			}
 	}
 	if (i>=6 && i<8 && st->monstro[i].vida > 0)
 	{
-			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1) // faca
+			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1)
 			{
-				st->monstro[i].vida = st->monstro[i].vida - 50;
+				st->monstro[i].vida = st->monstro[i].vida - 50; // 2 facadas
 			}
 			else 
 			{
-				st->monstro[i].vida=st->monstro[i].vida - 10; // soco;
+				st->monstro[i].vida=st->monstro[i].vida - 17; // 6 socos
 			}
 	}
 }
