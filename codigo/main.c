@@ -106,6 +106,18 @@ void draw_bomba (STATE *st)
 			attron(COLOR_PAIR(COLOR_RED));
 			mvaddch(st->bomba[i].coord.X, st->bomba[i].coord.Y, 'o' | A_BOLD);
 			attroff(COLOR_PAIR(COLOR_RED));
+			int rX, rY;
+	        int r = 1;
+	        for (rX = r; rX >= - r ; rX--) {
+			    for (rY = r; rY >= - r ; rY--) {
+					if (rX == 0 && rY == 0) continue;
+				    if (st->map[st->bomba[i].coord.X + rX][st->bomba[i].coord.Y + rY].caracterAtual == '.' && st->map[st->bomba[i].coord.X + rX][st->bomba[i].coord.Y + rY].ilum == 1) {
+				        attron(COLOR_PAIR(COLOR_RED));
+		                mvaddch(st->bomba[i].coord.X + rX, st->bomba[i].coord.Y + rY, st->map[st->bomba[i].coord.X + rX][st->bomba[i].coord.Y + rY].caracterAtual | A_BOLD);
+		                attroff(COLOR_PAIR(COLOR_RED));
+				}
+			}
+		}
 		}
 	}
 }
@@ -154,7 +166,7 @@ void efeito_bomba (STATE *st)
 {
 	for (int i = 0; i < NUM_MAX_BOMBAS; i++)
 	{
-		if (st->bomba[i].gerada && st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].dist == 2)
+		if (st->bomba[i].gerada && st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].dist == 1)
 		{
 			st->jogador.vida += EXPLOSAO;
 			st->acontecimento = 13;
@@ -387,8 +399,17 @@ void movimento_monstros (STATE *st, int i)
 }
 
 void ataque (STATE *st, int i) {
-	if (st->monstro[i].vida > 0) {
-	st->jogador.vida = st->jogador.vida - 5;
+	if ((i >= 0 && i < 4) && st->monstro[i].vida > 0)
+	{
+		st->jogador.vida = st->jogador.vida - 5;
+	}
+	if ((i >= 4 && i < 6) && st->monstro[i].vida > 0)
+	{
+		st->jogador.vida = st->jogador.vida - 10;
+	}
+	if ((i = 6 && i <= 8) && st->monstro[i].vida > 0)
+	{
+		st->jogador.vida = st->jogador.vida - 10;
 	}
 }
 
@@ -399,9 +420,24 @@ void tiros (STATE *st, int a, int b) {
 	while (st->map[x][y].caracterAtual != '#' && monstro == 1) {
 		for (int i = 0; i<8; i++) {
 			if (x == st->monstro[i].coord.X && y == st->monstro[i].coord.Y) {
-				st->monstro[i].vida = st->monstro[i].vida - 10;
+				if (i >=0 && i <4)
+			   {
+				st->monstro[i].vida = st->monstro[i].vida - 50;
 				monstro = 0;
 				break;
+			   }
+			   if (i >= 4 && i < 6)
+			   {
+				st->monstro[i].vida = st->monstro[i].vida - 50;
+				monstro = 0;
+				break;
+			   }
+			   if (i >= 6 && i<8)
+			   {
+				st->monstro[i].vida=st->monstro[i].vida-20;
+				monstro=0;
+				break;
+			   }
 			}
 		}
 		x+=a;
