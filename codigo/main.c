@@ -267,7 +267,7 @@ void draw_info(STATE *st) {
 	else {
 	if (st->acontecimento == 13) printw("uma bomba explodiu");
 	else {
-	if (st->acontecimento == 8) printw("uma bomba explodiu e foi atacado por um monstro");
+	if (st->acontecimento == 14) printw("uma bomba explodiu e foi atacado por um monstro");
 	}
 	}
 	}
@@ -395,11 +395,11 @@ void tiros (STATE *st, int a, int b) {
 	int monstro = 1;
 	int x = st->jogador.coord.X;
 	int y = st->jogador.coord.Y;
-	while (st->map[x][y].caracterAtual != '#' && monstro) {
+	while (st->map[x][y].caracterAtual != '#' && monstro == 1) {
 		for (int i = 0; i<8; i++) {
 			if (x == st->monstro[i].coord.X && y == st->monstro[i].coord.Y) {
-				st->monstro[i].vida -= 100;
-				monstro = 1;
+				st->monstro[i].vida = st->monstro[i].vida - 10;
+				monstro = 0;
 				break;
 			}
 		}
@@ -418,10 +418,6 @@ void combate(STATE *st, int i)
 			{
 				st->monstro[i].vida = st->monstro[i].vida - 50;
 			}
-			if (st->jogador.arma_atual == 2 || st->jogador.arma_atual == 3)
-			{
-				st->monstro[i].vida = st->monstro[i].vida - 50;
-			}
 			else 
 			{
 				st->monstro[i].vida=st->monstro[i].vida -10; // soco;
@@ -433,10 +429,6 @@ void combate(STATE *st, int i)
 			{
 				st->monstro[i].vida = st->monstro[i].vida - 20;
 			}
-			if (st->jogador.arma_atual == 2 || st->jogador.arma_atual == 3)
-			{
-				st->monstro[i].vida = st->monstro[i].vida - 20;
-			}
 			else 
 			{
 				st->monstro[i].vida=st->monstro[i].vida -10; // soco;
@@ -445,10 +437,6 @@ void combate(STATE *st, int i)
 	if (i>=6 && i<8 && st->monstro[i].vida > 0)
 	{
 			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1) // faca
-			{
-				st->monstro[i].vida = st->monstro[i].vida - 50;
-			}
-			if (st->jogador.arma_atual == 2 || st->jogador.arma_atual == 3)
 			{
 				st->monstro[i].vida = st->monstro[i].vida - 50;
 			}
@@ -735,6 +723,10 @@ void update(STATE *st)
 			break;
 	case 'X':
 	case 'x':
+	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+				tiros(st,1,0);
+			}
+			else {
 	        for (int i=0;i<8;i++) {
 			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
 				((st->monstro[i].coord.Y == st->jogador.coord.Y) && (st->monstro[i].coord.X) == st->jogador.coord.X + 1))
@@ -744,10 +736,20 @@ void update(STATE *st)
 				break;
 			}
 			}
+			}
 			for (int i=0;i<8;i++) {
 				if (st->monstro[i].vida <= 0) morte(st,i);
 				else {
-				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {ataque(st,i);if (st->acontecimento != 6) st->acontecimento = 5;}
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {
+					ataque(st,i);
+					if (st->acontecimento == 7) st->acontecimento = 9;
+					else {
+					if (st->acontecimento == 8) st->acontecimento = 10;
+					else {
+					if (st->acontecimento != 6) st->acontecimento = 5;
+					}
+					}
+					}
 				else {
 					if (st->monstro[i].vida > 0) {
 					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
@@ -761,6 +763,10 @@ void update(STATE *st)
 		    break;
 	case 'W':
 	case 'w':
+	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+				tiros(st,-1,0);
+			}
+			else {
 	        for (int i=0;i<8;i++) {
 			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
 				((st->monstro[i].coord.Y == st->jogador.coord.Y) && (st->monstro[i].coord.X) == st->jogador.coord.X - 1))
@@ -770,10 +776,20 @@ void update(STATE *st)
 				break;
 			}
 			}
+			}
 			for (int i=0;i<8;i++) {
 				if (st->monstro[i].vida <= 0) morte(st,i);
 				else {
-				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {ataque(st,i);if (st->acontecimento != 6) st->acontecimento = 5;}
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {
+					ataque(st,i);
+					if (st->acontecimento == 7) st->acontecimento = 9;
+					else {
+					if (st->acontecimento == 8) st->acontecimento = 10;
+					else {
+					if (st->acontecimento != 6) st->acontecimento = 5;
+					}
+					}
+				}
 				else {
 					if (st->monstro[i].vida > 0) {
 					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
@@ -787,6 +803,10 @@ void update(STATE *st)
 		    break;
 	case 'A':
 	case 'a':
+	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+				tiros(st,0,-1);
+			}
+			else {
 	        for (int i=0;i<8;i++) {
 			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
 				((st->monstro[i].coord.X == st->jogador.coord.X) && (st->monstro[i].coord.Y) == st->jogador.coord.Y - 1))
@@ -796,10 +816,20 @@ void update(STATE *st)
 				break;
 			}
 			}
+			}
 			for (int i=0;i<8;i++) {
 				if (st->monstro[i].vida <= 0) morte(st,i);
 				else {
-				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {ataque(st,i);if (st->acontecimento != 6) st->acontecimento = 5;}
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {
+					ataque(st,i);
+					if (st->acontecimento == 7) st->acontecimento = 9;
+					else {
+					if (st->acontecimento == 8) st->acontecimento = 10;
+					else {
+					if (st->acontecimento != 6) st->acontecimento = 5;
+					}
+					}
+				}
 				else {
 					if (st->monstro[i].vida > 0) {
 					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
@@ -813,6 +843,10 @@ void update(STATE *st)
 		    break;
 	case 'D':
 	case 'd':
+	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+				tiros(st,0,1);
+			}
+			else {
 	        for (int i=0;i<8;i++) {
 			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
 				((st->monstro[i].coord.X == st->jogador.coord.X) && (st->monstro[i].coord.Y) == st->jogador.coord.Y + 1))
@@ -822,10 +856,20 @@ void update(STATE *st)
 				break;
 		    }
 			}
+			}
 			for (int i=0;i<8;i++) {
 				if (st->monstro[i].vida <= 0) morte(st,i);
 				else {
-				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {ataque(st,i);if (st->acontecimento != 6) st->acontecimento = 5;}
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {
+					ataque(st,i);
+					if (st->acontecimento == 7) st->acontecimento = 9;
+					else {
+					if (st->acontecimento == 8) st->acontecimento = 10;
+					else {
+					if (st->acontecimento != 6) st->acontecimento = 5;
+					}
+					}
+				}
 				else {
 					if (st->monstro[i].vida > 0) {
 					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
@@ -839,6 +883,10 @@ void update(STATE *st)
 		    break;
 	case 'Q':
 	case 'q':
+	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+				tiros(st,-1,-1);
+			}
+			else {
 	        for (int i=0;i<8;i++) {
 			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
 				((st->monstro[i].coord.Y == st->jogador.coord.Y - 1) && (st->monstro[i].coord.X) == st->jogador.coord.X - 1))
@@ -847,10 +895,21 @@ void update(STATE *st)
 				st->acontecimento = 6;
 				break;
 			}
-			}for (int i=0;i<8;i++) {
+			}
+			}
+			for (int i=0;i<8;i++) {
 				if (st->monstro[i].vida <= 0) morte(st,i);
 				else {
-				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {ataque(st,i);if (st->acontecimento != 6) st->acontecimento = 5;}
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {
+					ataque(st,i);
+					if (st->acontecimento == 7) st->acontecimento = 9;
+					else {
+					if (st->acontecimento == 8) st->acontecimento = 10;
+					else {
+					if (st->acontecimento != 6) st->acontecimento = 5;
+					}
+					}
+				}
 				else {
 					if (st->monstro[i].vida > 0) {
 					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
@@ -864,6 +923,10 @@ void update(STATE *st)
 		    break;
 	case 'E':
 	case 'e':
+	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+				tiros(st,-1,1);
+			}
+			else {
 	        for (int i=0;i<8;i++) {
 			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
 				((st->monstro[i].coord.Y == st->jogador.coord.Y + 1) && (st->monstro[i].coord.X) == st->jogador.coord.X - 1))
@@ -873,10 +936,20 @@ void update(STATE *st)
 				break;
 			}
 			}
+			}
 			for (int i=0;i<8;i++) {
 				if (st->monstro[i].vida <= 0) morte(st,i);
 				else {
-				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {ataque(st,i);if (st->acontecimento != 6) st->acontecimento = 5;}
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {
+					ataque(st,i);
+					if (st->acontecimento == 7) st->acontecimento = 9;
+					else {
+					if (st->acontecimento == 8) st->acontecimento = 10;
+					else {
+					if (st->acontecimento != 6) st->acontecimento = 5;
+					}
+					}
+				}
 				else {
 					if (st->monstro[i].vida > 0) {
 					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
@@ -890,6 +963,10 @@ void update(STATE *st)
 		    break;
 	case 'Z':
 	case 'z':
+	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+				tiros(st,1,-1);
+			}
+			else {
 	        for (int i=0;i<8;i++) {
 			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
 				((st->monstro[i].coord.X == st->jogador.coord.X + 1) && (st->monstro[i].coord.Y) == st->jogador.coord.Y - 1))
@@ -899,10 +976,20 @@ void update(STATE *st)
 				break;
 			}
 			}
+			}
 			for (int i=0;i<8;i++) {
 				if (st->monstro[i].vida <= 0) morte(st,i);
 				else {
-				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {ataque(st,i);if (st->acontecimento != 6) st->acontecimento = 5;}
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {
+					ataque(st,i);
+					if (st->acontecimento == 7) st->acontecimento = 9;
+					else {
+					if (st->acontecimento == 8) st->acontecimento = 10;
+					else {
+					if (st->acontecimento != 6) st->acontecimento = 5;
+					}
+					}
+				}
 				else {
 					if (st->monstro[i].vida > 0) {
 					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
@@ -916,6 +1003,10 @@ void update(STATE *st)
 		    break;
 	case 'C':
 	case 'c':
+	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+				tiros(st,1,1);
+			}
+			else {
 	        for (int i=0;i<8;i++) {
 			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
 				((st->monstro[i].coord.X == st->jogador.coord.X + 1) && (st->monstro[i].coord.Y) == st->jogador.coord.Y + 1))
@@ -925,10 +1016,20 @@ void update(STATE *st)
 				break;
 		    }
 			}
+			}
 			for (int i=0;i<8;i++) {
 				if (st->monstro[i].vida <= 0) morte(st,i);
 				else {
-				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {ataque(st,i);if (st->acontecimento != 6) st->acontecimento = 5;}
+				if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->monstro[i].vida > 0) {
+					ataque(st,i);
+					if (st->acontecimento == 7) st->acontecimento = 9;
+					else {
+					if (st->acontecimento == 8) st->acontecimento = 10;
+					else {
+					if (st->acontecimento != 6) st->acontecimento = 5;
+					}
+					}
+				}
 				else {
 					if (st->monstro[i].vida > 0) {
 					mvaddch(st->monstro[i].coord.X, st->monstro[i].coord.Y, '.');
