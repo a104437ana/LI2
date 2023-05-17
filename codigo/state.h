@@ -1,11 +1,20 @@
 #ifndef ___STATE_H___
 #define ___STATE_H___
 
+#define MAX_DIST 10
+#define MAX_ROW 60 // x
+#define MAX_COL 250 // y
+#define SHOW_DIST 0
 #define MAX_VIDA_JOGADOR 100
 #define MIN_VIDA_JOGADOR 0
 #define MAX_VIDA_MONSTRO 100
 #define MAX_DURAB_ARMA 100
 #define NUM_MAX_POCOES 3
+#define SMALL_POTION 20
+#define LARGE_POTION 50
+#define POISON -20
+#define NUM_MAX_BOMBAS 3
+#define EXPLOSAO -10
 
 typedef struct coordenadas {
 	int X;
@@ -35,7 +44,12 @@ typedef struct pocao {
 	struct coordenadas coord;
 	int tipo;
 	int gerada;
-} POCOES;
+} POCAO;
+
+typedef struct bomba {
+	struct coordenadas coord;
+	int gerada;
+} BOMBA;
 
 typedef struct mapa {
 	char caracterAtual;
@@ -57,6 +71,7 @@ typedef struct state {
 	struct monstro monstro[8];
 	struct arma arma[4];
 	struct pocao pocao[NUM_MAX_POCOES];
+	struct bomba bomba [NUM_MAX_BOMBAS];
 	struct mapa map[60][250];
 } STATE;
 

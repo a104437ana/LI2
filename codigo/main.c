@@ -7,13 +7,8 @@
 #include "state.h"
 #include "mapa.h"
 
-#define MAX_DIST 10
-#define MAX_ROW 60	// x
-#define MAX_COL 250 // y
-#define SHOW_DIST 0
-#define SMALL_POTION 20
-#define LARGE_POTION 50
-#define POISON -20
+
+
 
 void draw_monsterRato(STATE *st)
 {
@@ -97,6 +92,20 @@ void draw_pocao (STATE *st)
 	}
 }
 
+void draw_bomba (STATE *st)
+{
+	int i;
+	for (i = 0; i < NUM_MAX_BOMBAS; i++)
+	{
+		if (st->bomba[i].gerada && st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].ilum == 1)
+		{
+			attron(COLOR_PAIR(COLOR_RED));
+			mvaddch(st->bomba[i].coord.X, st->bomba[i].coord.Y, 'o' | A_BOLD);
+			attroff(COLOR_PAIR(COLOR_RED));
+		}
+	}
+}
+
 void draw_player(STATE *st)
 {
 	attron(COLOR_PAIR(COLOR_WHITE));
@@ -115,10 +124,13 @@ void efeito_pocao (STATE *st)
 			case 0: // veneno
 				st->jogador.vida += POISON;
 				break;
-			case 1: // poção "pequena" (comida)
+			case 1:  // poção "pequena" (comida)
+			case 3:
 				st->jogador.vida += SMALL_POTION;
 				break;
 			case 2: // poção "grande"
+			case 4:
+			case 6:
 				st->jogador.vida += LARGE_POTION;
 				break;
 			}
@@ -129,6 +141,19 @@ void efeito_pocao (STATE *st)
 	if (st->jogador.vida < MIN_VIDA_JOGADOR) st->jogador.vida = MIN_VIDA_JOGADOR;
 	if (st->jogador.vida > MAX_VIDA_JOGADOR) st->jogador.vida = MAX_VIDA_JOGADOR;
 	
+}
+
+void efeito_bomba (STATE *st)
+{
+	for (int i = 0; i < NUM_MAX_BOMBAS; i++)
+	{
+		if (st->bomba[i].gerada && st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].dist == 0)
+		{
+			st->jogador.vida += EXPLOSAO;
+		}
+		st->bomba[i].gerada = 0;
+	}
+	if (st->jogador.vida < MIN_VIDA_JOGADOR) st->jogador.vida = MIN_VIDA_JOGADOR;
 }
 
 void reset_dist(STATE *st)
@@ -961,6 +986,7 @@ int main()
 		draw_arma_faca(&st);
 		draw_arma_pistola(&st);
 		draw_pocao(&st);
+		draw_bomba(&st);
 		draw_monsterRato(&st);
 		draw_monsterDog(&st);
 		draw_monsterBat(&st);

@@ -6,10 +6,6 @@
 
 #include "mapa.h"
 
-#define MAX_VIDA_JOGADOR 100
-#define MAX_VIDA_MONSTRO 100
-#define MAX_DURAB_ARMA 100
-
 void gerar_seeds (STATE *st) {
 	st->seed[0][0] = lrand48();
 	st->seed[1][0] = lrand48();
@@ -94,6 +90,25 @@ void gerar_coordenadas (STATE *st) {
 	for (int i = num_pocao; i < NUM_MAX_POCOES; i++) 
 	{
 		st->pocao[i].gerada = 0;
+	}
+
+	// criação de bombas
+	int num_bomba = (lrand48() % NUM_MAX_BOMBAS) + 1;
+
+	for (int i = 0; i < num_bomba; i++)
+    {
+		do 
+		{
+			st->bomba[i].coord.X = lrand48() % (st->jogo.X);
+			st->bomba[i].coord.Y = lrand48() % (st->jogo.Y);
+		}
+	    while (st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].acessivel != 1);
+	    
+		st->bomba[i].gerada = 1; 
+    }
+	for (int i = num_bomba; i < NUM_MAX_BOMBAS; i++) 
+	{
+		st->bomba[i].gerada = 0;
 	}
 }
 
