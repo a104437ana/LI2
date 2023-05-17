@@ -33,7 +33,6 @@ void gerar_coordenadas (STATE *st) {
 	    st->jogador.coord.Y = lrand48() % st->jogo.Y;
 	}
 	st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
-	st->jogador.vida = MAX_VIDA_JOGADOR;
 
 	st->escada.X = lrand48() % st->jogo.X;
 	st->escada.Y = lrand48() % st->jogo.Y;
@@ -60,7 +59,7 @@ void gerar_coordenadas (STATE *st) {
     }
 
 	for (int i = 0; i < 4; i++)
-    {
+    {   if (st->arma[i].equipada == 0) {
 		do
 		{
 			st->arma[i].coord.X = lrand48() % (st->jogo.X);
@@ -69,7 +68,7 @@ void gerar_coordenadas (STATE *st) {
 		while (st->map[st->arma[i].coord.X][st->arma[i].coord.Y].acessivel != 1);
 		
 		st->arma[i].durabilidade = MAX_DURAB_ARMA;
-		st->arma[i].equipada = 0;
+	}
     }
 
 	// criação de poções
