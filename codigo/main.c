@@ -1203,7 +1203,7 @@ int main()
 		{
 			for (int y = 0; y < st.jogo.Y; y++)
 			{
-				st.map[x][y].ilum = 1;
+				st.map[x][y].ilum = 0;
 			}
 		}
 		gerar_seeds(&st);
@@ -1220,6 +1220,40 @@ int main()
 		draw_monsterBat(&st);
 		draw_player(&st);
 		draw_info(&st);
+		move(st.jogo.X - 1, 0);
+		attron(COLOR_PAIR(COLOR_GREEN));
+	    printw(" | Exit - ");
+	    attroff(COLOR_PAIR(COLOR_GREEN));
+		attron(COLOR_PAIR(COLOR_YELLOW));
+	    printw("L");
+	    attroff(COLOR_PAIR(COLOR_YELLOW));
+		attron(COLOR_PAIR(COLOR_GREEN));
+	    printw(" | Pegar ou largar armas / beber poções - ");
+	    attroff(COLOR_PAIR(COLOR_GREEN));
+		attron(COLOR_PAIR(COLOR_YELLOW));
+	    printw("+");
+	    attroff(COLOR_PAIR(COLOR_YELLOW));
+		attron(COLOR_PAIR(COLOR_GREEN));
+	    printw(" | Troca arma atual - ");
+	    attroff(COLOR_PAIR(COLOR_GREEN));
+		attron(COLOR_PAIR(COLOR_YELLOW));
+	    printw("S");
+	    attroff(COLOR_PAIR(COLOR_YELLOW));
+		attron(COLOR_PAIR(COLOR_GREEN));
+	    printw(" | Andar na respetiva direção - ");
+	    attroff(COLOR_PAIR(COLOR_GREEN));
+		attron(COLOR_PAIR(COLOR_YELLOW));
+	    printw("1,2,3,4,5,6,7,8,9");
+	    attroff(COLOR_PAIR(COLOR_YELLOW));
+		attron(COLOR_PAIR(COLOR_GREEN));
+	    printw(" | Atacar na respetiva direção com a arma atual - ");
+	    attroff(COLOR_PAIR(COLOR_GREEN));
+		attron(COLOR_PAIR(COLOR_YELLOW));
+	    printw("Z,X,C,A,D,Q,W,E");
+	    attroff(COLOR_PAIR(COLOR_YELLOW));
+		attron(COLOR_PAIR(COLOR_GREEN));
+	    printw(" | ");
+	    attroff(COLOR_PAIR(COLOR_GREEN));
 		move(st.jogador.coord.X, st.jogador.coord.Y);
 		update(&st);
 	}
