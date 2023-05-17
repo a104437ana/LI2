@@ -154,11 +154,12 @@ void efeito_bomba (STATE *st)
 {
 	for (int i = 0; i < NUM_MAX_BOMBAS; i++)
 	{
-		if (st->bomba[i].gerada && st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].dist == 0)
+		if (st->bomba[i].gerada && st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].dist == 2)
 		{
 			st->jogador.vida += EXPLOSAO;
+			st->acontecimento = 13;
+			st->bomba[i].gerada = 0;
 		}
-		st->bomba[i].gerada = 0;
 	}
 	if (st->jogador.vida < MIN_VIDA_JOGADOR) st->jogador.vida = MIN_VIDA_JOGADOR;
 }
@@ -516,6 +517,7 @@ void update(STATE *st)
 					}
 				}
 			}
+			efeito_bomba (st);
 			break;
 		case KEY_UP:
 		case '8':
@@ -543,6 +545,7 @@ void update(STATE *st)
 					}
 				}
 			}
+			efeito_bomba (st);
 			break;
 		case KEY_A3:
 		case '9':
@@ -570,6 +573,7 @@ void update(STATE *st)
 					}
 				}
 			}
+			efeito_bomba (st);
 			break;
 		case KEY_LEFT:
 		case '4':
@@ -597,6 +601,7 @@ void update(STATE *st)
 					}
 				}
 			}
+			efeito_bomba (st);
 			break;
 		case KEY_B2:
 		case '5':
@@ -612,6 +617,7 @@ void update(STATE *st)
 					}
 				}
 			}
+			efeito_bomba (st);
 			break;
 		case KEY_RIGHT:
 		case '6':
@@ -639,6 +645,7 @@ void update(STATE *st)
 					}
 				}
 			}
+			efeito_bomba (st);
 			break;
 		case KEY_C1:
 		case '1':
@@ -666,6 +673,7 @@ void update(STATE *st)
 					}
 				}
 			}
+			efeito_bomba (st);
 			break;
 		case KEY_DOWN:
 		case '2':
@@ -693,6 +701,7 @@ void update(STATE *st)
 					}
 				}
 			}
+			efeito_bomba (st);
 			break;
 		case KEY_C3:
 		case '3':
@@ -720,6 +729,7 @@ void update(STATE *st)
 					}
 				}
 			}
+			efeito_bomba (st);
 			break;
 	case 'X':
 	case 'x':
@@ -1193,7 +1203,7 @@ int main()
 		{
 			for (int y = 0; y < st.jogo.Y; y++)
 			{
-				st.map[x][y].ilum = 0;
+				st.map[x][y].ilum = 1;
 			}
 		}
 		gerar_seeds(&st);
