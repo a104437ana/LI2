@@ -58,6 +58,7 @@ typedef struct mapa {
 	int dist;
 	int ilum;
 	int acessado;
+	int objeto;
 } MAPA;
 
 typedef struct state {

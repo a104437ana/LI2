@@ -129,8 +129,9 @@ void draw_player(STATE *st)
 	attroff(COLOR_PAIR(COLOR_WHITE));
 }
 
-void efeito_pocao (STATE *st)
+int efeito_pocao (STATE *st)
 {
+	int x = 0;
 	for (int i = 0; i < NUM_MAX_POCOES; i++)
 	{
 		if (st->pocao[i].gerada && st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].dist == 0)
@@ -155,10 +156,13 @@ void efeito_pocao (STATE *st)
 			}
 		// destruir poção depois de usada
 		st->pocao[i].gerada = 0;
+		st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].objeto = 0;
+		x = 1;
 		}
 	}
 	if (st->jogador.vida < MIN_VIDA_JOGADOR) st->jogador.vida = MIN_VIDA_JOGADOR;
 	if (st->jogador.vida > MAX_VIDA_JOGADOR) st->jogador.vida = MAX_VIDA_JOGADOR;
+	return x;
 	
 }
 
@@ -172,6 +176,7 @@ void efeito_bomba (STATE *st)
 			if (st->acontecimento == 5) st->acontecimento = 14;
 			else st->acontecimento = 13;
 			st->bomba[i].gerada = 0;
+			st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].objeto = 0;
 		}
 	}
 	if (st->jogador.vida < MIN_VIDA_JOGADOR) st->jogador.vida = MIN_VIDA_JOGADOR;
@@ -265,7 +270,7 @@ void draw_info(STATE *st) {
 	else {
 	if (st->acontecimento == 5) printw("foi atacado por um monstro");
 	else {
-	if (st->acontecimento == 6) printw("atacou um monstro e foi atacado por um monstro");
+	if (st->acontecimento == 6) printw("atacou e foi atacado por um monstro");
 	else {
 	if (st->acontecimento == 7) printw("deu um tiro e acertou");
 	else {
@@ -282,6 +287,9 @@ void draw_info(STATE *st) {
 	if (st->acontecimento == 13) printw("uma bomba explodiu");
 	else {
 	if (st->acontecimento == 14) printw("uma bomba explodiu e foi atacado por um monstro");
+	else {
+	if (st-> acontecimento == 15) printw("largou uma arma e pegou noutra");
+	}
 	}
 	}
 	}
@@ -402,15 +410,15 @@ void movimento_monstros (STATE *st, int i)
 void ataque (STATE *st, int i) {
 	if ((i >= 0 && i < 4) && st->monstro[i].vida > 0)
 	{
-		st->jogador.vida = st->jogador.vida - 5;
+		st->jogador.vida = st->jogador.vida - 15;
 	}
 	if ((i >= 4 && i < 6) && st->monstro[i].vida > 0)
 	{
-		st->jogador.vida = st->jogador.vida - 10;
+		st->jogador.vida = st->jogador.vida - 20;
 	}
 	if ((i = 6 && i <= 8) && st->monstro[i].vida > 0)
 	{
-		st->jogador.vida = st->jogador.vida - 10;
+		st->jogador.vida = st->jogador.vida - 15;
 	}
 }
 
@@ -423,19 +431,19 @@ void tiros (STATE *st, int a, int b) {
 			if (x == st->monstro[i].coord.X && y == st->monstro[i].coord.Y) {
 				if (i >=0 && i <4)
 			   {
-				st->monstro[i].vida = st->monstro[i].vida - 50;
+				st->monstro[i].vida = st->monstro[i].vida - 20;
 				monstro = 0;
 				break;
 			   }
 			   if (i >= 4 && i < 6)
 			   {
-				st->monstro[i].vida = st->monstro[i].vida - 50;
+				st->monstro[i].vida = st->monstro[i].vida - 25;
 				monstro = 0;
 				break;
 			   }
 			   if (i >= 6 && i<8)
 			   {
-				st->monstro[i].vida=st->monstro[i].vida-20;
+				st->monstro[i].vida=st->monstro[i].vida - 20;
 				monstro=0;
 				break;
 			   }
@@ -458,18 +466,18 @@ void combate(STATE *st, int i)
 			}
 			else 
 			{
-				st->monstro[i].vida=st->monstro[i].vida -10; // soco;
+				st->monstro[i].vida=st->monstro[i].vida - 10; // soco;
 			}
 	}
 	if (i>=4 && i<6 && st->monstro[i].vida > 0)
 	{
 			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1) // faca
 			{
-				st->monstro[i].vida = st->monstro[i].vida - 20;
+				st->monstro[i].vida = st->monstro[i].vida - 35;
 			}
 			else 
 			{
-				st->monstro[i].vida=st->monstro[i].vida -10; // soco;
+				st->monstro[i].vida=st->monstro[i].vida - 10; // soco;
 			}
 	}
 	if (i>=6 && i<8 && st->monstro[i].vida > 0)
@@ -480,7 +488,7 @@ void combate(STATE *st, int i)
 			}
 			else 
 			{
-				st->monstro[i].vida=st->monstro[i].vida -10; // soco;
+				st->monstro[i].vida=st->monstro[i].vida - 10; // soco;
 			}
 	}
 }
@@ -498,6 +506,8 @@ void get_arma (STATE *st)
 			st->jogador.arma = i;
 			st->jogador.arma_atual = i;
 			st->arma[i].equipada = 1;
+			st->arma[i].coord.X = 0;
+	        st->arma[i].coord.Y = 0;
 			stop = 1;
 		}
 	}
@@ -505,12 +515,29 @@ void get_arma (STATE *st)
 
 void put_arma (STATE *st)
 {
+	if (st->map[st->jogador.coord.X][st->jogador.coord.Y].objeto == 0) {
 	if (st->jogador.arma != -1) st->acontecimento = 3;
 	st->arma[st->jogador.arma].equipada = 0;
 	st->arma[st->jogador.arma].coord.X = st->jogador.coord.X;
 	st->arma[st->jogador.arma].coord.Y = st->jogador.coord.Y;
 	st->jogador.arma = -1;
 	st->jogador.arma_atual = -1;
+	}
+	int stop = 0;
+	for (int i = 0; !stop && i < 4; i++) {
+	if (st->jogador.coord.X == st->arma[i].coord.X && st->jogador.coord.Y == st->arma[i].coord.Y) {
+		st->acontecimento = 15;
+		st->arma[st->jogador.arma].equipada = 0;
+	    st->arma[st->jogador.arma].coord.X = st->jogador.coord.X;
+	    st->arma[st->jogador.arma].coord.Y = st->jogador.coord.Y;
+	    st->jogador.arma = i;
+	    st->jogador.arma_atual = i;
+		st->arma[i].equipada = 1;
+		st->arma[i].coord.X = 0;
+	    st->arma[i].coord.Y = 0;
+		stop = 1;
+	}
+	}
 }
 
 void troca (STATE *st) {
@@ -1089,9 +1116,10 @@ void update(STATE *st)
 			}
 		    break;
 	case '+':
+	        if (efeito_pocao (st) == 0) {
 			if (st->jogador.arma == -1) get_arma (st);
 			else put_arma (st);
-			efeito_pocao (st);
+			}
 			break;
 	case 'S':
 	case 's':
@@ -1265,7 +1293,7 @@ int main()
 	    printw("L");
 	    attroff(COLOR_PAIR(COLOR_YELLOW));
 		attron(COLOR_PAIR(COLOR_GREEN));
-	    printw(" | Pegar ou largar armas / beber poções - ");
+	    printw(" | Beber poções / Pegar ou largar armas - ");
 	    attroff(COLOR_PAIR(COLOR_GREEN));
 		attron(COLOR_PAIR(COLOR_YELLOW));
 	    printw("+");

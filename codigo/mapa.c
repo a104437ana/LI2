@@ -68,6 +68,7 @@ void gerar_coordenadas (STATE *st) {
 		while (st->map[st->arma[i].coord.X][st->arma[i].coord.Y].acessivel != 1);
 		
 		st->arma[i].durabilidade = MAX_DURAB_ARMA;
+		st->map[st->arma[i].coord.X][st->arma[i].coord.Y].objeto = 1;
 	}
     }
 
@@ -81,14 +82,16 @@ void gerar_coordenadas (STATE *st) {
 			st->pocao[i].coord.X = lrand48() % (st->jogo.X);
 			st->pocao[i].coord.Y = lrand48() % (st->jogo.Y);
 		}
-	    while (st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].acessivel != 1);
+	    while (st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].acessivel != 1 && st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].objeto != 1);
 	    
 		st->pocao[i].tipo = lrand48() % NUM_MAX_POCOES;
 		st->pocao[i].gerada = 1;
+        st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].objeto = 1;
     }
 	for (int i = num_pocao; i < NUM_MAX_POCOES; i++) 
 	{
 		st->pocao[i].gerada = 0;
+		st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].objeto = 0;
 	}
 
 	// criação de bombas
@@ -101,13 +104,15 @@ void gerar_coordenadas (STATE *st) {
 			st->bomba[i].coord.X = lrand48() % (st->jogo.X);
 			st->bomba[i].coord.Y = lrand48() % (st->jogo.Y);
 		}
-	    while (st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].acessivel != 1);
+	    while (st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].acessivel != 1 && st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].objeto != 1);
 	    
 		st->bomba[i].gerada = 1; 
+		st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].objeto = 1;
     }
 	for (int i = num_bomba; i < NUM_MAX_BOMBAS; i++) 
 	{
 		st->bomba[i].gerada = 0;
+		st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].objeto = 0;
 	}
 }
 
@@ -369,6 +374,7 @@ void gerar(STATE *st) {
 
 	for (x = 0; x < st->jogo.X; x++) {
 		for (y = 0; y < st->jogo.Y ; y++) {
+			st->map[x][y].objeto = 0;
 			if (st->map[x][y].caracterAtual == '#') st->map[x][y].acessivel = -1;
 			if (st->map[x][y].caracterAtual == '+') st->map[x][y].acessivel = 1;
 		}
