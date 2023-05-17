@@ -169,7 +169,8 @@ void efeito_bomba (STATE *st)
 		if (st->bomba[i].gerada && st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].dist == 1)
 		{
 			st->jogador.vida += EXPLOSAO;
-			st->acontecimento = 13;
+			if (st->acontecimento == 5) st->acontecimento = 14;
+			else st->acontecimento = 13;
 			st->bomba[i].gerada = 0;
 		}
 	}
@@ -1258,7 +1259,7 @@ int main()
 		draw_info(&st);
 		move(st.jogo.X - 1, 0);
 		attron(COLOR_PAIR(COLOR_GREEN));
-	    printw(" | Exit - ");
+	    printw(" | Sair - ");
 	    attroff(COLOR_PAIR(COLOR_GREEN));
 		attron(COLOR_PAIR(COLOR_YELLOW));
 	    printw("L");
@@ -1270,7 +1271,7 @@ int main()
 	    printw("+");
 	    attroff(COLOR_PAIR(COLOR_YELLOW));
 		attron(COLOR_PAIR(COLOR_GREEN));
-	    printw(" | Troca arma atual - ");
+	    printw(" | Trocar arma atual - ");
 	    attroff(COLOR_PAIR(COLOR_GREEN));
 		attron(COLOR_PAIR(COLOR_YELLOW));
 	    printw("S");
