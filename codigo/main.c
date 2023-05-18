@@ -1288,7 +1288,7 @@ int main()
 		{
 			for (int y = 0; y < st.jogo.Y; y++)
 			{
-				st.map[x][y].ilum = 0;
+				st.map[x][y].ilum = 1;
 			}
 		}
 		gerar_seeds(&st);
