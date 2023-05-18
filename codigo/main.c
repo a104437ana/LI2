@@ -132,7 +132,7 @@ void draw_player(STATE *st)
 int efeito_pocao (STATE *st)
 {
 	int x = 0;
-	for (int i = 0; i < NUM_MAX_POCOES; i++)
+	for (int i = 0; i < st->pocaoMax; i++)
 	{
 		if (st->pocao[i].gerada && st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].dist == 0)
 		{
@@ -144,6 +144,7 @@ int efeito_pocao (STATE *st)
 				break;
 			case 1:  // poção "pequena" (comida)
 			case 3:
+			case 5:
 				st->jogador.vida += SMALL_POTION;
 				st->acontecimento = 11;
 				break;
@@ -523,6 +524,7 @@ void put_arma (STATE *st)
 	st->jogador.arma = -1;
 	st->jogador.arma_atual = -1;
 	}
+	else {
 	int stop = 0;
 	for (int i = 0; !stop && i < 4; i++) {
 	if (st->jogador.coord.X == st->arma[i].coord.X && st->jogador.coord.Y == st->arma[i].coord.Y) {
@@ -538,6 +540,7 @@ void put_arma (STATE *st)
 		stop = 1;
 	}
 	}
+	}
 }
 
 void troca (STATE *st) {
@@ -550,6 +553,7 @@ void troca (STATE *st) {
 
 void update(STATE *st)
 {
+	int r;
 	st->acontecimento = 1;
 	int key = getch();
 	mvaddch(st->jogador.coord.X, st->jogador.coord.Y, '.');
@@ -1116,7 +1120,8 @@ void update(STATE *st)
 			}
 		    break;
 	case '+':
-	        if (efeito_pocao (st) == 0) {
+			r = efeito_pocao (st);
+	        if (r == 0) {
 			if (st->jogador.arma == -1) get_arma (st);
 			else put_arma (st);
 			}
@@ -1293,7 +1298,7 @@ int main()
 	    printw("L");
 	    attroff(COLOR_PAIR(COLOR_YELLOW));
 		attron(COLOR_PAIR(COLOR_GREEN));
-	    printw(" | Beber poções / Pegar ou largar armas - ");
+	    printw(" | Beber poção / Pegar ou largar armas - ");
 	    attroff(COLOR_PAIR(COLOR_GREEN));
 		attron(COLOR_PAIR(COLOR_YELLOW));
 	    printw("+");

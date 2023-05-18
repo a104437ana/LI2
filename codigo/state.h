@@ -62,6 +62,7 @@ typedef struct mapa {
 } MAPA;
 
 typedef struct state {
+	int pocaoMax;
 	int acontecimento;
 	int nivel;
 	int seed[8][2];

@@ -74,6 +74,7 @@ void gerar_coordenadas (STATE *st) {
 
 	// criação de poções
 	int num_pocao = (lrand48() % NUM_MAX_POCOES) + 1;
+	st->pocaoMax = num_pocao;
 
 	for (int i = 0; i < num_pocao; i++)
     {
