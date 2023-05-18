@@ -28,6 +28,8 @@ void draw_monsterRato(STATE *st)
 	}
 }
 
+
+
 void draw_monsterDog(STATE *st)
 {
 	for (int i = 4; i < 6; i++)
@@ -121,6 +123,22 @@ void draw_bomba (STATE *st)
 		}
 	}
 }
+
+void draw_arma_bombaPlayer(STATE *st)
+{
+	for (int i = 0;i<2;i++)
+	{
+       if(st->arma[i].equipada != 1 && st->map[st->arma[i].coord.X][st->arma[i].coord.Y].ilum == 1)
+	   {
+
+			attron(COLOR_PAIR(COLOR_YELLOW));
+			mvaddch(st->arma[i].coord.X, st->arma[i].coord.Y, '*' | A_BOLD);
+			attroff(COLOR_PAIR(COLOR_YELLOW));
+	   }
+	}
+}
+
+
 
 void draw_player(STATE *st)
 {
@@ -512,7 +530,7 @@ void get_arma (STATE *st)
 	int i, stop;
 	stop = 0;
 
-	for (i = 0; !stop && i < 10; i++)
+	for (i = 0; !stop && i < 12; i++)
 	{
 		if (st->arma[i].equipada != 1 && st->map[st->arma[i].coord.X][st->arma[i].coord.Y].dist == 0)
 		{
@@ -539,7 +557,7 @@ void put_arma (STATE *st)
 	}
 	else {
 	int stop = 0;
-	for (int i = 0; !stop && i < 10; i++) {
+	for (int i = 0; !stop && i < 12; i++) {
 	if (st->jogador.coord.X == st->arma[i].coord.X && st->jogador.coord.Y == st->arma[i].coord.Y) {
 		st->acontecimento = 15;
 		st->arma[st->jogador.arma].equipada = 0;
