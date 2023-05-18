@@ -476,7 +476,7 @@ void combate(STATE *st, int i)
 {
 	if (i>=0 && i<4 && st->monstro[i].vida > 0)
 	{
-			if (st->jogador.arma_atual >= 0 || st->jogador.arma_atual < 5) 
+			if (st->jogador.arma_atual >= 0 && st->jogador.arma_atual < 5) 
 			{
 				st->monstro[i].vida = st->monstro[i].vida - 50; // 2 facadas
 			}
@@ -487,7 +487,7 @@ void combate(STATE *st, int i)
 	}
 	if (i>=4 && i<6 && st->monstro[i].vida > 0)
 	{
-			if (st->jogador.arma_atual >= 0 || st->jogador.arma_atual < 5)
+			if (st->jogador.arma_atual >= 0 && st->jogador.arma_atual < 5)
 			{
 				st->monstro[i].vida = st->monstro[i].vida - 35; // 3 facadas
 			}
@@ -498,7 +498,7 @@ void combate(STATE *st, int i)
 	}
 	if (i>=6 && i<8 && st->monstro[i].vida > 0)
 	{
-			if (st->jogador.arma_atual >= 0 || st->jogador.arma_atual < 5)
+			if (st->jogador.arma_atual >= 0 && st->jogador.arma_atual < 5)
 			{
 				st->monstro[i].vida = st->monstro[i].vida - 50; // 2 facadas
 			}
@@ -821,7 +821,7 @@ void update(STATE *st)
 			}
 			else {
 	        for (int i=0;i<8;i++) {
-			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 5) &&
 				((st->monstro[i].coord.Y == st->jogador.coord.Y) && (st->monstro[i].coord.X) == st->jogador.coord.X + 1))
 			{
 				combate(st,i);
@@ -861,7 +861,7 @@ void update(STATE *st)
 			}
 			else {
 	        for (int i=0;i<8;i++) {
-			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 5) &&
 				((st->monstro[i].coord.Y == st->jogador.coord.Y) && (st->monstro[i].coord.X) == st->jogador.coord.X - 1))
 			{
 				combate(st,i);
@@ -901,7 +901,7 @@ void update(STATE *st)
 			}
 			else {
 	        for (int i=0;i<8;i++) {
-			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 5) &&
 				((st->monstro[i].coord.X == st->jogador.coord.X) && (st->monstro[i].coord.Y) == st->jogador.coord.Y - 1))
 			{
 				combate(st,i);
@@ -941,7 +941,7 @@ void update(STATE *st)
 			}
 			else {
 	        for (int i=0;i<8;i++) {
-			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 5) &&
 				((st->monstro[i].coord.X == st->jogador.coord.X) && (st->monstro[i].coord.Y) == st->jogador.coord.Y + 1))
 			{
 				combate(st,i);
@@ -981,7 +981,7 @@ void update(STATE *st)
 			}
 			else {
 	        for (int i=0;i<8;i++) {
-			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 5) &&
 				((st->monstro[i].coord.Y == st->jogador.coord.Y - 1) && (st->monstro[i].coord.X) == st->jogador.coord.X - 1))
 			{
 				combate(st,i);
@@ -1021,7 +1021,7 @@ void update(STATE *st)
 			}
 			else {
 	        for (int i=0;i<8;i++) {
-			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 5) &&
 				((st->monstro[i].coord.Y == st->jogador.coord.Y + 1) && (st->monstro[i].coord.X) == st->jogador.coord.X - 1))
 			{
 				combate(st,i);
@@ -1061,7 +1061,7 @@ void update(STATE *st)
 			}
 			else {
 	        for (int i=0;i<8;i++) {
-			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 5) &&
 				((st->monstro[i].coord.X == st->jogador.coord.X + 1) && (st->monstro[i].coord.Y) == st->jogador.coord.Y - 1))
 			{
 				combate(st,i);
@@ -1101,7 +1101,7 @@ void update(STATE *st)
 			}
 			else {
 	        for (int i=0;i<8;i++) {
-			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 2) &&
+			if ((st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist == 1 && st->jogador.arma_atual >= -1 && st->jogador.arma_atual < 5) &&
 				((st->monstro[i].coord.X == st->jogador.coord.X + 1) && (st->monstro[i].coord.Y) == st->jogador.coord.Y + 1))
 			{
 				combate(st,i);
