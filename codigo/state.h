@@ -71,7 +71,7 @@ typedef struct state {
 	struct coordenadas sala[50];
 	struct jogador jogador;
 	struct monstro monstro[8];
-	struct arma arma[12];
+	struct arma arma[10];
 	struct pocao pocao[NUM_MAX_POCOES];
 	struct bomba bomba [NUM_MAX_BOMBAS];
 	struct mapa map[60][250];

@@ -124,22 +124,6 @@ void draw_bomba (STATE *st)
 	}
 }
 
-void draw_arma_bombaPlayer(STATE *st)
-{
-	for (int i = 0;i<2;i++)
-	{
-       if(st->arma[i].equipada != 1 && st->map[st->arma[i].coord.X][st->arma[i].coord.Y].ilum == 1)
-	   {
-
-			attron(COLOR_PAIR(COLOR_YELLOW));
-			mvaddch(st->arma[i].coord.X, st->arma[i].coord.Y, '*' | A_BOLD);
-			attroff(COLOR_PAIR(COLOR_YELLOW));
-	   }
-	}
-}
-
-
-
 void draw_player(STATE *st)
 {
 	attron(COLOR_PAIR(COLOR_WHITE));
