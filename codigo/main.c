@@ -58,7 +58,7 @@ void draw_monsterBat(STATE *st)
 
 void draw_arma_faca (STATE *st)
 {
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		if (st->arma[i].equipada != 1 && st->map[st->arma[i].coord.X][st->arma[i].coord.Y].ilum == 1)
 		{
@@ -71,7 +71,7 @@ void draw_arma_faca (STATE *st)
 
 void draw_arma_pistola (STATE *st)
 {
-	for (int i = 2; i < 4; i++)
+	for (int i = 5; i < 10; i++)
 	{
 		if (st->arma[i].equipada != 1 && st->map[st->arma[i].coord.X][st->arma[i].coord.Y].ilum == 1)
 		{
@@ -145,12 +145,25 @@ int efeito_pocao (STATE *st)
 			case 1:  // poção "pequena" (comida)
 			case 3:
 			case 5:
+			case 7:
+			case 9:
+			case 11:
+			case 13:
+			case 15:
+			case 17:
+			case 19:
 				st->jogador.vida += SMALL_POTION;
 				st->acontecimento = 11;
 				break;
 			case 2: // poção "grande"
 			case 4:
 			case 6:
+			case 8:
+			case 10:
+			case 12:
+			case 14:
+			case 16:
+			case 18:
 				st->jogador.vida += LARGE_POTION;
 				st->acontecimento = 11;
 				break;
@@ -249,9 +262,9 @@ void draw_info(STATE *st) {
 	attron(COLOR_PAIR(COLOR_YELLOW));
 	if (st->jogador.arma_atual == -1) printw("corpo");
 	else {
-	if (st->jogador.arma_atual >= 0 && st->jogador.arma_atual<2) printw("faca");
+	if (st->jogador.arma_atual >= 0 && st->jogador.arma_atual<5) printw("faca");
 	else {
-	if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual<4) printw("pistola");
+	if (st->jogador.arma_atual >= 5 && st->jogador.arma_atual<10) printw("pistola");
 	}
 	}
 	attroff(COLOR_PAIR(COLOR_YELLOW));
@@ -461,7 +474,7 @@ void combate(STATE *st, int i)
 {
 	if (i>=0 && i<4 && st->monstro[i].vida > 0)
 	{
-			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1) 
+			if (st->jogador.arma_atual >= 0 || st->jogador.arma_atual < 5) 
 			{
 				st->monstro[i].vida = st->monstro[i].vida - 50; // 2 facadas
 			}
@@ -472,7 +485,7 @@ void combate(STATE *st, int i)
 	}
 	if (i>=4 && i<6 && st->monstro[i].vida > 0)
 	{
-			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1)
+			if (st->jogador.arma_atual >= 0 || st->jogador.arma_atual < 5)
 			{
 				st->monstro[i].vida = st->monstro[i].vida - 35; // 3 facadas
 			}
@@ -483,7 +496,7 @@ void combate(STATE *st, int i)
 	}
 	if (i>=6 && i<8 && st->monstro[i].vida > 0)
 	{
-			if (st->jogador.arma_atual == 0 || st->jogador.arma_atual == 1)
+			if (st->jogador.arma_atual >= 0 || st->jogador.arma_atual < 5)
 			{
 				st->monstro[i].vida = st->monstro[i].vida - 50; // 2 facadas
 			}
@@ -499,7 +512,7 @@ void get_arma (STATE *st)
 	int i, stop;
 	stop = 0;
 
-	for (i = 0; !stop && i < 4; i++)
+	for (i = 0; !stop && i < 10; i++)
 	{
 		if (st->arma[i].equipada != 1 && st->map[st->arma[i].coord.X][st->arma[i].coord.Y].dist == 0)
 		{
@@ -526,7 +539,7 @@ void put_arma (STATE *st)
 	}
 	else {
 	int stop = 0;
-	for (int i = 0; !stop && i < 4; i++) {
+	for (int i = 0; !stop && i < 10; i++) {
 	if (st->jogador.coord.X == st->arma[i].coord.X && st->jogador.coord.Y == st->arma[i].coord.Y) {
 		st->acontecimento = 15;
 		st->arma[st->jogador.arma].equipada = 0;
@@ -801,7 +814,7 @@ void update(STATE *st)
 			break;
 	case 'X':
 	case 'x':
-	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+	        if (st->jogador.arma_atual >= 5 && st->jogador.arma_atual < 10) {
 				tiros(st,1,0);
 			}
 			else {
@@ -841,7 +854,7 @@ void update(STATE *st)
 		    break;
 	case 'W':
 	case 'w':
-	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+	        if (st->jogador.arma_atual >= 5 && st->jogador.arma_atual < 10) {
 				tiros(st,-1,0);
 			}
 			else {
@@ -881,7 +894,7 @@ void update(STATE *st)
 		    break;
 	case 'A':
 	case 'a':
-	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+	        if (st->jogador.arma_atual >= 5 && st->jogador.arma_atual < 10) {
 				tiros(st,0,-1);
 			}
 			else {
@@ -921,7 +934,7 @@ void update(STATE *st)
 		    break;
 	case 'D':
 	case 'd':
-	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+	        if (st->jogador.arma_atual >= 5 && st->jogador.arma_atual < 10) {
 				tiros(st,0,1);
 			}
 			else {
@@ -961,7 +974,7 @@ void update(STATE *st)
 		    break;
 	case 'Q':
 	case 'q':
-	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+	        if (st->jogador.arma_atual >= 5 && st->jogador.arma_atual < 10) {
 				tiros(st,-1,-1);
 			}
 			else {
@@ -1001,7 +1014,7 @@ void update(STATE *st)
 		    break;
 	case 'E':
 	case 'e':
-	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+	        if (st->jogador.arma_atual >= 5 && st->jogador.arma_atual < 10) {
 				tiros(st,-1,1);
 			}
 			else {
@@ -1041,7 +1054,7 @@ void update(STATE *st)
 		    break;
 	case 'Z':
 	case 'z':
-	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+	        if (st->jogador.arma_atual >= 5 && st->jogador.arma_atual < 10) {
 				tiros(st,1,-1);
 			}
 			else {
@@ -1081,7 +1094,7 @@ void update(STATE *st)
 		    break;
 	case 'C':
 	case 'c':
-	        if (st->jogador.arma_atual >= 2 && st->jogador.arma_atual < 4) {
+	        if (st->jogador.arma_atual >= 5 && st->jogador.arma_atual < 10) {
 				tiros(st,1,1);
 			}
 			else {
@@ -1160,7 +1173,7 @@ void iluminacao(STATE *st)
 		{
 			st->map[(int)(x)][(int)(y)].ilum = 1;
 			st->map[(int)(x)][(int)(y)].acessado = 1;
-			if (st->map[(int)(x)][(int)(y)].caracterAtual == '#') break;
+			if (st->map[(int)(x)][(int)(y)].caracterAtual == '#' || st->map[(int)(x)][(int)(y)].dist == 300) break;
 			x = x + xVetor;
 			y = y + yVetor;
 		}
@@ -1277,9 +1290,9 @@ int main()
 			}
 		}
 		gerar_seeds(&st);
-		iluminacao(&st);
 		reset_dist(&st);
 		calc_dist(st.jogador.coord.X, st.jogador.coord.Y, 0, &st);
+		iluminacao(&st);
 		draw_map(&st);
 		draw_arma_faca(&st);
 		draw_arma_pistola(&st);

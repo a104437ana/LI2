@@ -58,7 +58,7 @@ void gerar_coordenadas (STATE *st) {
 		st->monstro[i].vida = MAX_VIDA_MONSTRO;
     }
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 10; i++)
     {   if (st->arma[i].equipada == 0) {
 		do
 		{
@@ -73,27 +73,28 @@ void gerar_coordenadas (STATE *st) {
     }
 
 	// criação de poções
-	int num_pocao = (lrand48() % NUM_MAX_POCOES) + 1;
-	st->pocaoMax = num_pocao;
+	//int num_pocao = (lrand48() % NUM_MAX_POCOES) + 1;
+	st->pocaoMax = NUM_MAX_POCOES;
 	for (int i = 0; i < NUM_MAX_POCOES; i++) {
 		st->pocao[i].coord.X = 0;
 		st->pocao[i].coord.Y = 0;
 		st->pocao[i].tipo = -1;
 		st->pocao[i].gerada = 0;
 	}
-	for (int i = 0; i < num_pocao; i++)
+	for (int i = 0; i < NUM_MAX_POCOES; i++)
     {
 		do 
 		{
 			st->pocao[i].coord.X = lrand48() % (st->jogo.X);
 			st->pocao[i].coord.Y = lrand48() % (st->jogo.Y);
 		}
-	    while (st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].acessivel != 1 && st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].objeto != 1);
+	    while (st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].acessivel != 1 && st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].objeto == 0);
 	    
 		st->pocao[i].tipo = lrand48() % NUM_MAX_POCOES;
 		st->pocao[i].gerada = 1;
         st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].objeto = 1;
     }
+	/*
 	for (int i = num_pocao; i < NUM_MAX_POCOES; i++) 
 	{
 		st->pocao[i].coord.X = 0;
@@ -102,27 +103,29 @@ void gerar_coordenadas (STATE *st) {
 		st->pocao[i].gerada = 0;
 		st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].objeto = 0;
 	}
+*/
 
 	// criação de bombas
-	int num_bomba = (lrand48() % NUM_MAX_BOMBAS) + 1;
+	//int num_bomba = (lrand48() % NUM_MAX_BOMBAS) + 1;
 
     for (int i = 0; i < NUM_MAX_BOMBAS; i++) {
 		st->bomba[i].coord.X = 0;
 		st->bomba[i].coord.Y = 0;
 		st->bomba[i].gerada = 0;
 	}
-	for (int i = 0; i < num_bomba; i++)
+	for (int i = 0; i < NUM_MAX_BOMBAS; i++)
     {
 		do 
 		{
 			st->bomba[i].coord.X = lrand48() % (st->jogo.X);
 			st->bomba[i].coord.Y = lrand48() % (st->jogo.Y);
 		}
-	    while (st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].acessivel != 1 && st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].objeto != 1);
+	    while (st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].acessivel != 1 && st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].objeto == 0);
 	    
 		st->bomba[i].gerada = 1; 
 		st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].objeto = 1;
     }
+	/*
 	for (int i = num_bomba; i < NUM_MAX_BOMBAS; i++) 
 	{
 		st->bomba[i].coord.X = 0;
@@ -130,6 +133,7 @@ void gerar_coordenadas (STATE *st) {
 		st->bomba[i].gerada = 0;
 		st->map[st->bomba[i].coord.X][st->bomba[i].coord.Y].objeto = 0;
 	}
+	*/
 }
 
 int raio (STATE *st, int x, int y, int r) {

@@ -9,11 +9,11 @@
 #define MIN_VIDA_JOGADOR 0
 #define MAX_VIDA_MONSTRO 100
 #define MAX_DURAB_ARMA 100
-#define NUM_MAX_POCOES 7
+#define NUM_MAX_POCOES 20
 #define SMALL_POTION 20
 #define LARGE_POTION 50
 #define POISON -20
-#define NUM_MAX_BOMBAS 3
+#define NUM_MAX_BOMBAS 5
 #define EXPLOSAO -10
 
 typedef struct coordenadas {
@@ -71,7 +71,7 @@ typedef struct state {
 	struct coordenadas sala[50];
 	struct jogador jogador;
 	struct monstro monstro[8];
-	struct arma arma[4];
+	struct arma arma[10];
 	struct pocao pocao[NUM_MAX_POCOES];
 	struct bomba bomba [NUM_MAX_BOMBAS];
 	struct mapa map[60][250];
