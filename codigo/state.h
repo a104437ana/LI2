@@ -36,7 +36,6 @@ typedef struct monstro {
 
 typedef struct arma {
 	struct coordenadas coord;
-	int durabilidade;
 	int equipada; // 1 se o jogador pegou na arma, 0 se está no chão;
 } ARMA;
 
