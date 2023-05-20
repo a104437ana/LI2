@@ -1,6 +1,7 @@
 #ifndef ___STATE_H___
 #define ___STATE_H___
 
+#define LIGHT_STATE 0
 #define MAX_DIST 10
 #define MAX_ROW 60 // x
 #define MAX_COL 250 // y
