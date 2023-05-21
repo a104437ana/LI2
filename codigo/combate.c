@@ -5,7 +5,7 @@ void get_arma (STATE *st)
 	int i, stop;
 	stop = 0;
 
-	for (i = 0; !stop && i < 12; i++)
+	for (i = 0; !stop && i < 10; i++)
 	{
 		if (st->arma[i].equipada != 1 && st->map[st->arma[i].coord.X][st->arma[i].coord.Y].dist == 0)
 		{
@@ -32,7 +32,7 @@ void put_arma (STATE *st)
 	}
 	else {
 	int stop = 0;
-	for (int i = 0; !stop && i < 12; i++) {
+	for (int i = 0; !stop && i < 10; i++) {
 	if (st->jogador.coord.X == st->arma[i].coord.X && st->jogador.coord.Y == st->arma[i].coord.Y) {
 		st->acontecimento = 15;
 		st->arma[st->jogador.arma].equipada = 0;
