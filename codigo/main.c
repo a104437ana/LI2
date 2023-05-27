@@ -11,7 +11,7 @@
 
 /**
  * a104437 - Ana Sá Oliveira
- * a104170- Beatriz Peixoto - Acrescentar o movimento dos monstros atrás do jogador, os momentos onde há combate e os comandos usados no ataque  e combate.
+ * a104170- Beatriz Peixoto 
  * a72481 - Sara Ramalho
  * Função principal.
  */

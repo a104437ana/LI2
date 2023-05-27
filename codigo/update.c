@@ -7,10 +7,10 @@
 #include "combate.h"
 
 /**
- * a104437 - Ana Sá Oliveira
- * a104170- Beatriz Peixoto - Acrescentar o movimento dos monstros atrás do jogador, os momentos onde há combate e os comandos usados no ataque  e combate.
- * a72481 - Sara Ramalho
- * Atualiza o que acontece no jogo.
+ * a104437 - Ana Sá Oliveira - Geração de novo jogo quando encontra escadas, combate com pistola, acontecimentos e tudo que envolva mecher em armas.
+ * a104170- Beatriz Peixoto - Acrescentar o movimento dos monstros atrás do jogador, os momentos onde há combate e os comandos usados no ataque e combate.
+ * a72481 - Sara Ramalho - Efeito das bombas e das poções.
+ * Atualiza o que acontece no jogo em função da jogada (em função da tecla pressionada).
  */
 void update(STATE *st)
 {

@@ -1,7 +1,6 @@
 #include "combate.h"
 
 /**
- * a104437 - Ana Sá Oliveira
  * a72481 - Sara Ramalho
  * O jogador pega numa arma do mapa.
  */
@@ -29,7 +28,7 @@ void get_arma (STATE *st)
 /**
  * a104437 - Ana Sá Oliveira
  * a72481 - Sara Ramalho
- * O jogador coloca a arma de volta no mapa.
+ * O jogador coloca a arma de volta no mapa ou troca a arma atual por uma arma no chão.
  */
 void put_arma (STATE *st)
 {
