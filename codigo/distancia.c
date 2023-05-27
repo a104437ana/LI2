@@ -1,5 +1,9 @@
 #include "distancia.h"
 
+/**
+ * a72481 - Sara Ramalho
+ * Todos os pontos do mapa ficam com o valor 300 para a distância, até a mesma ser calculada na função calc_dist.
+ */
 void reset_dist(STATE *st)
 {
 	int i, j;
@@ -11,6 +15,10 @@ void reset_dist(STATE *st)
 	}
 }
 
+/**
+ * a72481 - Sara Ramalho
+ * Calcula a distância de um ponto do mapa ao jogador.
+ */
 void calc_dist(int R, int C, int value, STATE *st)
 {
 	if (R < 0 || C < 0 || R >= st->jogo.X || C >= st->jogo.Y)

@@ -199,6 +199,10 @@ void draw_monsterBat(STATE *st)
 	}
 }
 
+/**
+ * a72481 - Sara Ramalho
+ * Desenhar facas geradas no mapa.
+ */
 void draw_arma_faca (STATE *st)
 {
 	for (int i = 0; i < 5; i++)
@@ -212,6 +216,10 @@ void draw_arma_faca (STATE *st)
 	}
 }
 
+/**
+ * a72481 - Sara Ramalho
+ * Desenhar pistolas geradas no mapa.
+ */
 void draw_arma_pistola (STATE *st)
 {
 	for (int i = 5; i < 10; i++)
@@ -225,6 +233,10 @@ void draw_arma_pistola (STATE *st)
 	}
 }
 
+/**
+ * a72481 - Sara Ramalho
+ * Desenhar poções geradas no mapa.
+ */
 void draw_pocao (STATE *st)
 {
 	int i;
@@ -239,6 +251,10 @@ void draw_pocao (STATE *st)
 	}
 }
 
+/**
+ * a72481 - Sara Ramalho
+ * Desenhar bombas geradas no mapa.
+ */
 void draw_bomba (STATE *st)
 {
 	int i;

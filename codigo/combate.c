@@ -1,5 +1,9 @@
 #include "combate.h"
 
+/**
+ * a72481 - Sara Ramalho
+ * O jogador pega numa arma do mapa.
+ */
 void get_arma (STATE *st)
 {
 	int i, stop;
@@ -20,6 +24,10 @@ void get_arma (STATE *st)
 	}
 }
 
+/**
+ * a72481 - Sara Ramalho
+ * O jogador coloca a arma de volta no mapa.
+ */
 void put_arma (STATE *st)
 {
 	if (st->map[st->jogador.coord.X][st->jogador.coord.Y].objeto == 0) {
@@ -150,6 +158,10 @@ void morte (STATE *st, int i) {
 	st->monstro[i].vida = 0;
 }
 
+/**
+ * a72481 - Sara Ramalho
+ * Efeito da poção na vida do jogador quando usada.
+ */
 int efeito_pocao (STATE *st)
 {
 	int x = 0;
@@ -201,6 +213,10 @@ int efeito_pocao (STATE *st)
 	
 }
 
+/**
+ * a72481 - Sara Ramalho
+ * Efeito da bomba na vida do jogador quando pisada a área circundante.
+ */
 void efeito_bomba (STATE *st)
 {
 	for (int i = 0; i < NUM_MAX_BOMBAS; i++)

@@ -54,6 +54,10 @@ void gerar_coordenadas (STATE *st) {
 		st->monstro[i].vida = MAX_VIDA_MONSTRO;
     }
 
+	/**
+	 * a72481 - Sara Ramalho
+	 * Criação de armas.
+	 */
 	for (int i = 0; i < 10; i++)
     {   if (st->arma[i].equipada == 0) {
 		do
@@ -67,7 +71,10 @@ void gerar_coordenadas (STATE *st) {
 	}
     }
 
-	// criação de poções
+	/**
+	 * a72481 - Sara Ramalho
+	 * Criação de poções.
+	 */
 	st->pocaoMax = NUM_MAX_POCOES;
 	for (int i = 0; i < NUM_MAX_POCOES; i++) {
 		st->pocao[i].coord.X = 0;
@@ -89,8 +96,10 @@ void gerar_coordenadas (STATE *st) {
         st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].objeto = 1;
     }
 
-	// criação de bombas
-
+	/**
+	 * a72481 - Sara Ramalho
+	 * Criação de bombas.
+	 */
     for (int i = 0; i < NUM_MAX_BOMBAS; i++) {
 		st->bomba[i].coord.X = 0;
 		st->bomba[i].coord.Y = 0;
