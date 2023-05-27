@@ -19,6 +19,7 @@ void get_arma (STATE *st)
 			st->arma[i].equipada = 1;
 			st->arma[i].coord.X = 0;
 	        st->arma[i].coord.Y = 0;
+			st->map[st->jogador.coord.X][st->jogador.coord.Y].objeto = 0;
 			stop = 1;
 		}
 	}
@@ -37,6 +38,7 @@ void put_arma (STATE *st)
 	st->arma[st->jogador.arma].coord.Y = st->jogador.coord.Y;
 	st->jogador.arma = -1;
 	st->jogador.arma_atual = -1;
+	st->map[st->jogador.coord.X][st->jogador.coord.Y].objeto = 1;
 	}
 	else {
 	int stop = 0;
