@@ -157,6 +157,10 @@ void draw_info(STATE *st) {
 	attroff(COLOR_PAIR(COLOR_GREEN));
 }
 
+/**
+ * a104170 - Beatriz Peixoto
+ * Desenhar os monstros neste caso 4 ratos.
+ */
 void draw_monsterRato(STATE *st)
 {
 	for (int i = 0; i < 4; i++)
@@ -171,6 +175,10 @@ void draw_monsterRato(STATE *st)
 	}
 }
 
+/**
+ * a104170 - Beatriz Peixoto
+ * Desenhar os monstros- 2 cães.
+ */
 void draw_monsterDog(STATE *st)
 {
 	for (int i = 4; i < 6; i++)
@@ -185,6 +193,10 @@ void draw_monsterDog(STATE *st)
 	}
 }
 
+/**
+ * a104170 - Beatriz Peixoto
+ * Desenhar os monstros - 2 morcegos.
+ */
 void draw_monsterBat(STATE *st)
 {
 	for (int i = 6; i < 8; i++)

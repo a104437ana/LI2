@@ -6,6 +6,10 @@
 #include "actions.h"
 #include "combate.h"
 
+/**
+ * a104170- Beatriz Peixoto
+ * Acrescentar o movimento dos monstros atrás do jogador, os momentos onde há combate e os comandos usados no ataque  e combate.
+ */
 void update(STATE *st)
 {
 	int r;

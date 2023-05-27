@@ -2,6 +2,12 @@
 
 #include "iluminacao.h"
 
+/**
+ * a104170- Beatriz Peixoto
+ * Campo de visão do jogador. Para cada ângulo, às coordenadas do jogador soma-se o vetor (xVetor, yVetor) e atualizamos as coordenadas do jogador 
+ até atingirmos uma parede ou que a distancia seja maior que a definida.
+ */
+
 void iluminacao(STATE *st)
 {
 	float angulo = 0;
@@ -14,8 +20,6 @@ void iluminacao(STATE *st)
 	{
 		x = st->jogador.coord.X;
 		y = st->jogador.coord.Y;
-		// ordenada = (st->jogador.coord.X) - ((st->jogador.coord.Y) * tan(angulo));
-		//  determinar o vetor diretor d areta
 		xVetor = sin(angulo) - 0;
 		yVetor = cos(angulo) - 0;
 

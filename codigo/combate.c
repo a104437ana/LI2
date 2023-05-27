@@ -57,6 +57,10 @@ void put_arma (STATE *st)
 	}
 }
 
+/**
+ * a104437 - Ana Sá Oliveira
+ * Troca a arma atual pela arma guardada (trocar corpo por corpo ou arma por corpo ou corpo por arma, dependendo do que temos).
+ */
 void troca (STATE *st) {
 	st->acontecimento = 4;
 	if (st->jogador.arma_atual == -1) st->jogador.arma_atual = st->jogador.arma;
@@ -65,6 +69,10 @@ void troca (STATE *st) {
 	}
 }
 
+/**
+ * a104170 - Beatriz Peixoto
+ * Função do ataque de cada monstro ao jogador com danos diferentes dependendo do tipo de monstro.
+ */
 void ataque (STATE *st, int i) {
 	if ((i >= 0 && i < 4) && st->monstro[i].vida > 0)
 	{
@@ -80,6 +88,10 @@ void ataque (STATE *st, int i) {
 	}
 }
 
+/**
+ * a104437 - Ana Sá Oliveira
+ * Função que trata do ataque do jogador com a pistola que dispara um tiro numa determinada direção, o que pode afetar ou não a vida de alguns monstros.
+ */
 void tiros (STATE *st, int a, int b) {
 	int monstro = 1;
 	int x = st->jogador.coord.X;
@@ -114,6 +126,10 @@ void tiros (STATE *st, int a, int b) {
 	else {st->acontecimento = 8;}
 }
 
+/**
+ * a104170 - Beatriz Peixoto
+ * Função do ataque do jogador a cada monstro. Existem varios ataques e diferentes danos para cada tipo de monstro.
+ */
 void combate(STATE *st, int i)
 {
 	if (i>=0 && i<4 && st->monstro[i].vida > 0)

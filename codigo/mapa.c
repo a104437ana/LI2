@@ -2,6 +2,27 @@
 
 #include "mapa.h"
 
+/**
+ * a104437 - Ana Sá Oliveira
+ * Determina o número de paredes que existem num determinado raio.
+ */
+int raio (STATE *st, int x, int y, int r) {
+	int n = 0;
+	signed int rX, rY;
+	if (r>=0) {
+		for (rX = r; rX >= - r ; rX--) {
+			for (rY = r; rY >= - r ; rY--) {
+				if (st->map[x+rX][y+rY].caracterAnterior == '#') n++;
+			}
+		}
+	}
+	return n;
+}
+
+/**
+ * a104437 - Ana Sá Oliveira
+ * Gera números aleatórios, que serão usados posteriormente no movimento aleatório dos monstros (quando distantes do jogador).
+ */
 void gerar_seeds (STATE *st) {
 	st->seed[0][0] = lrand48();
 	st->seed[1][0] = lrand48();
@@ -21,7 +42,17 @@ void gerar_seeds (STATE *st) {
 	st->seed[7][1] = lrand48();
 }
 
+/**
+ * a104437 - Ana Sá Oliveira
+ * a104170 - Beatriz Peixoto
+ * a72481 - Sara Ramalho
+ * Gera as coordenadas e inicializa o jogador, as escadas, os monstros, as armas, as poções e as bombas.
+ */
 void gerar_coordenadas (STATE *st) {
+	/**
+     * a104437 - Ana Sá Oliveira
+     * Gera coordenadas aleatórias para o jogador.
+     */
 	st->jogador.coord.X = lrand48() % st->jogo.X;
 	st->jogador.coord.Y = lrand48() % st->jogo.Y;
 	while (raio(st,st->jogador.coord.X,st->jogador.coord.Y,1) != 0 || st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel != 1) {
@@ -30,6 +61,10 @@ void gerar_coordenadas (STATE *st) {
 	}
 	st->map[st->jogador.coord.X][st->jogador.coord.Y].acessivel = 0;
 
+    /**
+     * a104437 - Ana Sá Oliveira
+     * Gera coordenadas aleatórias para as escadas.
+     */
 	st->escada.X = lrand48() % st->jogo.X;
 	st->escada.Y = lrand48() % st->jogo.Y;
 	while (st->map[st->escada.X][st->escada.Y].acessivel != 1) {
@@ -38,6 +73,10 @@ void gerar_coordenadas (STATE *st) {
     }
 	st->map[st->escada.X][st->escada.Y].acessivel = 0;
 
+    /**
+     * a104170- Beatriz Peixoto
+     * Criação aleatória das coordenadas dos monstros.
+     */
 	for (int i = 0; i < 8; i++)
     {
 		st->monstro[i].coord.X = lrand48() % (st->jogo.X);
@@ -119,19 +158,10 @@ void gerar_coordenadas (STATE *st) {
     }
 }
 
-int raio (STATE *st, int x, int y, int r) {
-	int n = 0;
-	signed int rX, rY;
-	if (r>=0) {
-		for (rX = r; rX >= - r ; rX--) {
-			for (rY = r; rY >= - r ; rY--) {
-				if (st->map[x+rX][y+rY].caracterAnterior == '#') n++;
-			}
-		}
-	}
-	return n;
-}
-
+/**
+ * a104437 - Ana Sá Oliveira
+ * Gera um primeiro mapa aleatório com aproximadamente 40% de paredes e com duas camadas de paredes a sua volta.
+ */
 void first_map (STATE *st) {
 	int x, y;
 	x = 0;
@@ -182,6 +212,11 @@ void first_map (STATE *st) {
 	}
 }
 
+/**
+ * a104437 - Ana Sá Oliveira
+ * Primeiro algoritmo para transformar a aparência do mapa, faz com que um ponto com 5 ou mais paredes a volta e nele vire parede,
+  um ponto com 2 ou menos paredes a volta e nele vire parede e torna os restantes pontos não paredes.
+ */
 void first_alg (STATE *st) {
 	int x, y;
 	for (x=0;x<st->jogo.X;x++) {
@@ -208,6 +243,11 @@ void first_alg (STATE *st) {
 	}
 }
 
+/**
+ * a104437 - Ana Sá Oliveira
+ * Segundo algoritmo para transformar a aparência do mapa, faz com que um ponto com 5 ou mais paredes a volta e nele vire parede
+ e torna os restantes pontos não paredes.
+ */
 void second_alg (STATE *st) {
 	int x, y;
 	for (x=0;x<st->jogo.X;x++) {
@@ -229,6 +269,13 @@ void second_alg (STATE *st) {
 	}
 }
 
+/**
+ * a104437 - Ana Sá Oliveira
+ * Algoritmo flood fill que recebe um ponto, e trata esse ponto e os pontos adjacentes. Se o ponto a tratar ainda não foi percorrido pelo algoritmo 
+ e se esse ponto não for uma parede nem estiver fora do mapa, então iremos mudar o seu valor acessível para o pretendido e iremos chamar a mesma função 
+ (recursividade) para agora tratar deste ponto e dos seus pontos adjacentes. Esta função percorre uma área de pontos e muda o seu valor acessível para o
+ pretendido.
+ */
 void flood_fill_alg (STATE *st, int x, int y, int valor1,int valor2) {
 	signed int rX, rY;
 	for (rX = 1; rX >= - 1 ; rX--) {
@@ -241,6 +288,10 @@ void flood_fill_alg (STATE *st, int x, int y, int valor1,int valor2) {
 		}
 }
 
+/**
+ * a104437 - Ana Sá Oliveira
+ * Põe todos os pontos do mapa com valor acessível igual a 0, menos as paredes que ficam com valor acessível -1.
+ */
 void reset_acesso (STATE *st) {
 	int x, y;
 	for (x = 0; x < st->jogo.X; x++) {
@@ -251,6 +302,12 @@ void reset_acesso (STATE *st) {
 	}
 }
 
+/**
+ * a104437 - Ana Sá Oliveira
+ * Procura pontos com valor acessível 0 (ainda não percorridos), guarda as coordenadas desse ponto e utiliza a função com o algoritmo flood fill para 
+ prencher esse ponto e a área adjacente com o valor acessível adequado. Assim, cada área isolada terá um determinado valor acessível e terá uma coordenada
+ inicial correspondente (utéis para depois formar os corredores que unirão todas as áreas).
+ */
 int prencher_mapa_acesso (STATE *st) {
 	int x,y,i;
 	i = 1;
@@ -268,6 +325,10 @@ int prencher_mapa_acesso (STATE *st) {
 	return i;
 }
 
+/**
+ * a104437 - Ana Sá Oliveira
+ * Gera corredores horizontais (ou verticais) para unir áreas de valor acessivel diferente de 1 com áreas de valor acessível igual a 1.
+ */
 void gerar_corredores (STATE *st, int i) {
 	int j,x,y;
 	j = 1;
@@ -362,6 +423,10 @@ void gerar_corredores (STATE *st, int i) {
 	}
 }
 
+/**
+ * a104437 - Ana Sá Oliveira
+ * Gera um mapa novo utilizando as funções anteriores e inicializa ou incrementa alguns valores do mapa e do jogo (por exemplo, incrementa o nivel do jogo).
+ */
 void gerar(STATE *st) {
 	int i,x,y;
 	first_map(st);

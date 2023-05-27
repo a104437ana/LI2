@@ -8,6 +8,10 @@ void do_movement_action(STATE *st, int dx, int dy)
 	st->jogador.coord.Y += dy;
 }
 
+/**
+ * a104170- Beatriz Peixoto
+ * Função que cria o movimento dos monstros e, ajustando os valores das coordenadas, os monstros procuram o jogador.
+ */
 void movimento_monstros (STATE *st, int i)
 {	
 	if (st->monstro[i].vida > 0) {
