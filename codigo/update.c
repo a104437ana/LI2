@@ -7,8 +7,10 @@
 #include "combate.h"
 
 /**
- * a104170- Beatriz Peixoto
- * Acrescentar o movimento dos monstros atrás do jogador, os momentos onde há combate e os comandos usados no ataque  e combate.
+ * a104437 - Ana Sá Oliveira
+ * a104170- Beatriz Peixoto - Acrescentar o movimento dos monstros atrás do jogador, os momentos onde há combate e os comandos usados no ataque  e combate.
+ * a72481 - Sara Ramalho
+ * Atualiza o que acontece no jogo.
  */
 void update(STATE *st)
 {

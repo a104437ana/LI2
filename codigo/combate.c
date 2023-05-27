@@ -1,6 +1,7 @@
 #include "combate.h"
 
 /**
+ * a104437 - Ana Sá Oliveira
  * a72481 - Sara Ramalho
  * O jogador pega numa arma do mapa.
  */
@@ -26,6 +27,7 @@ void get_arma (STATE *st)
 }
 
 /**
+ * a104437 - Ana Sá Oliveira
  * a72481 - Sara Ramalho
  * O jogador coloca a arma de volta no mapa.
  */
@@ -169,6 +171,10 @@ void combate(STATE *st, int i)
 	}
 }
 
+/**
+ * a104437 - Ana Sá Oliveira
+ * Mata os monstros (faz com que eles não interfiram mais no jogo, desapareçam).
+ */
 void morte (STATE *st, int i) {
 	st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].acessivel = 1;
 	st->monstro[i].coord.X = 0;

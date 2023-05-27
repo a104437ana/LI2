@@ -9,11 +9,16 @@ void do_movement_action(STATE *st, int dx, int dy)
 }
 
 /**
+ * a104437 - Ana Sá Oliveira
  * a104170- Beatriz Peixoto
  * Função que cria o movimento dos monstros e, ajustando os valores das coordenadas, os monstros procuram o jogador.
  */
 void movimento_monstros (STATE *st, int i)
 {	
+	/**
+     * a104170 - Beatriz Peixoto
+     * Movimenta os monstros quando estão perto do jogador.
+     */
 	if (st->monstro[i].vida > 0) {
 	if (st->map[st->monstro[i].coord.X][st->monstro[i].coord.Y].dist != 300)
 	{
@@ -85,6 +90,10 @@ void movimento_monstros (STATE *st, int i)
 			return;
 		}
 	}
+	/**
+     * a104437 - Ana Sá Oliveira
+     * Movimenta os monstros quando estão longe do jogador.
+     */
 	else {
 		signed int x, y;
 		x = 0;

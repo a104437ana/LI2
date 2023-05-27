@@ -2,9 +2,18 @@
 
 #include "populate.h"
 
+/**
+ * a72481 - Sara Ramalho
+ * a104437 - Ana Sá Oliveira
+ * Desenha o mapa.
+ */
 void draw_map(STATE *st)
 {
 	int x, y;
+	/**
+     * a104437 - Ana Sá Oliveira
+     * Desenha o mapa normalmente.
+     */
 	for (x = 0; x < st->jogo.X; x++)
 	{
 		for (y = 0; y < st->jogo.Y; y++)
@@ -32,7 +41,10 @@ void draw_map(STATE *st)
 		}
 	
 	}
-
+	/**
+    * a72481 - Sara Ramalho
+    * Desenha as distâncias.
+    */
 	if (SHOW_DIST)
 	{
 		for (x = 0; x < st->jogo.X; x++)
@@ -63,6 +75,10 @@ void draw_player(STATE *st)
 	attroff(COLOR_PAIR(COLOR_WHITE));
 }
 
+/**
+ * a104437 - Ana Sá Oliveira
+ * Desenha as informações que variam ao longo do jogo, por exemplo: vida, arma atual, acontecimento, etc.
+ */
 void draw_info(STATE *st) {
 	move(0, 0);
 	attron(COLOR_PAIR(COLOR_GREEN));

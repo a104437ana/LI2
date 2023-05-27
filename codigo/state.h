@@ -3,8 +3,6 @@
 
 #define LIGHT_STATE 0
 #define MAX_DIST 10
-#define MAX_ROW 60 // x
-#define MAX_COL 250 // y
 #define SHOW_DIST 0
 #define MAX_VIDA_JOGADOR 100
 #define MIN_VIDA_JOGADOR 0
