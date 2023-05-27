@@ -189,7 +189,7 @@ void morte (STATE *st, int i) {
 int efeito_pocao (STATE *st)
 {
 	int x = 0;
-	for (int i = 0; i < st->pocaoMax; i++)
+	for (int i = 0; i < NUM_MAX_POCOES; i++)
 	{
 		if (st->pocao[i].gerada && st->map[st->pocao[i].coord.X][st->pocao[i].coord.Y].dist == 0)
 		{

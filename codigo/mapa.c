@@ -114,7 +114,6 @@ void gerar_coordenadas (STATE *st) {
 	 * a72481 - Sara Ramalho
 	 * Criação de poções.
 	 */
-	st->pocaoMax = NUM_MAX_POCOES;
 	for (int i = 0; i < NUM_MAX_POCOES; i++) {
 		st->pocao[i].coord.X = 0;
 		st->pocao[i].coord.Y = 0;
