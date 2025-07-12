@@ -135,6 +135,7 @@ Na barra superior do jogo temos várias informações sobre o jogador e o seu es
 └── 📄 README.md           # Documentação principal do projeto
 ```
 O enunciado deste projeto é o ficheiro [projeto.pdf](projeto.pdf).
+
 O código deste jogo encontra-se na pasta [codigo](codigo).
 ## Autores
 ### Grupo 54
