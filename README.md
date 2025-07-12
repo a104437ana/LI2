@@ -115,14 +115,27 @@ Na barra superior do jogo temos várias informações sobre o jogador e o seu es
 
 #### Boa sorte! 🍀
 
-![Roguelite](readme/1.png)
-![Roguelite aproximado](readme/2.png)
-
-## Comparação
+## Projeto desenvolvido
+### Comparação
 | O nosso Roguelite                    | O Brogue                   |
 |:-----------------------------:|:------------------------------:|
 | ![O nosso Roguelite](readme/3.png)     | ![O Brogue](readme/0.jpg)     |
 
+### Um jogo no nível 1
+![Roguelite](readme/1.png)
+### Esse jogo ampliado
+![Roguelite aproximado](readme/2.png)
+### Organização do projeto
+```
+📁 LI2
+├── 📁 codigo              # Código do jogo
+├── 📁 readme              # Imagens utilizadas neste README.md
+├── 📄 PL8G54.zip          # Ficheiro compactado com o código do jogo
+├── 📄 projeto.pdf         # Enunciado do projeto
+└── 📄 README.md           # Documentação principal do projeto
+```
+O enunciado deste projeto é o ficheiro [projeto.pdf](projeto.pdf).
+O código deste jogo encontra-se na pasta [codigo](codigo).
 ## Autores
 ### Grupo 54
 - [Ana Sá Oliveira](https://github.com/a104437ana) (A104437)
