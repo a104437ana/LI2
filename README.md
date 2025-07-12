@@ -24,9 +24,6 @@ cd LI2
 cd codigo
 ```
 ```
-make clean
-```
-```
 make
 ```
 
